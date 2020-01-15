@@ -1,0 +1,255 @@
+---
+title: "Practical A"
+author: "Gerko Vink"
+date: ""
+output: 
+   html_document:
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    number_sections: false
+---
+  
+<style type="text/css">
+  
+body{ /* Normal  */
+  font-size: 12px;
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 18px;
+  color: DarkBlue;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+}
+h2 { /* Header 2 */
+  font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+}
+code.r{ /* Code block */
+  font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+  font-size: 14px;
+}
+</style>
+  
+---
+  
+```{r echo=FALSE}
+printAnswers <- TRUE
+```
+
+We use the following packages in this Practical:
+```{r message=FALSE, warning = FALSE}
+library(dplyr)     # for data manipulation
+library(magrittr)  # for pipes
+library(ggplot2)   # for visualization
+library(mice)      # for the boys data
+```
+
+---
+
+# Exercises
+
+---
+
+## `for`-loops
+
+---
+
+1. **Create a `for`-loop that loops over all numbers between 0 and 10, but only prints numbers below 5. **
+
+---
+
+2. **Modify the for loop to only print the numbers 3, 4, and 5.**
+
+---
+
+3. **Try to do the same thing without a for-loop, by subsetting a vector from 0 to 10 directly.**
+
+---
+
+4. **Recreate the following matrix, where 1 to eight are multiplied by 1 on the first row, 2 on the second, etc. Tip: use `byrow = TRUE` to fill a matrix left-to-right instead of top-to-bottom.**
+```{r echo=FALSE, eval=TRUE}
+
+# Create a matrix with 1 to 8. 
+mat <- matrix(1:8, ncol=8, nrow=5, byrow = TRUE)
+
+# Loop over each row, and multiply it. 
+for (i in 1:5) {
+  mat[i, ] <- mat[i, ] * i
+}
+
+mat
+``` 
+
+---
+
+5. **Create a 6 by 6 matrix of strings, where each cell contains "row + column = sum".  For example, the second row, third column would yield "2 + 3 = 6". Tip: Create an empty 6x6 matrix first and fill it with values later. **
+
+---
+
+6. **Modify your loop to put `"Sum > 8"` in the matrix in the cells where that is true.** 
+
+---
+
+The `anscombe` data set is a wonderful data set from 1973 by Francis J. Anscombe aimed to demonstrate that pairs of variables can have the same statistical properties, while having completely differnt graphical representations. We will be using this data set more this week. If you'd like to know more about `anscombe`, you can simply call `?anscombe` to enter the help.
+
+You can directly call `anscombe` from your console because the `datasets` package is a base package in `R`. This means that it is always included and loaded when you start an `R` instance. In general, when you would like to access functions or data sets from packages that are not automatically loaded, we don't have to explicitly load the package. We can also call `package::thing-we-need` to directly 'grab' the `thing-we-need` from the `package` namespace. For example,  
+```{r}
+test <- datasets::anscombe
+identical(test, anscombe) #test if identical
+```
+
+This is especially handy within functions, as we can call `package::function-name` to borrow functionality from installed packages, without loading the whole package. Calling only those functions that you need is more memory-efficient than loading it all. More memory efficient means faster computation. 
+
+---
+
+7. **Display summary statistics (for example, using `summary()`) for each column of the `anscombe` dataset from the `datasets` package**
+
+---
+
+## `apply()`
+
+---
+
+8. **Display summary statistics for each column of the `anscombe` dataset using `apply()`.**
+
+---
+
+9. **Display summary statistics for each column of the `anscombe` dataset using `sapply()`. **
+
+---
+
+10. **Display summary statistics for each column of the `anscombe` dataset using `lapply()`. **
+
+---
+
+## Pipes
+
+--- 
+
+11. **Use a pipe to do the following:**
+
+- draw 1000 values from a normal distribution with `mean = 5` and `sd = 1` - $N(5, 1)$, 
+- create a matrix where the first 500 values are the first column and the second 500 values are the second column **
+- make a scatterplot of these two columns
+
+---
+
+12. **Use a pipe to calculate the correlation matrix on the `anscombe` data set**
+
+---
+
+13. **Now use a pipe to calculate the correlation for the pair (`x4`, `y4`) on the `anscombe` data set**
+
+---
+
+The `boys` dataset is part of package `mice`. It is a subset of 748 Dutch boystaken from the Fourth Dutch Growth Study. It's columns record a variety of growth measures. Inspect the help for `boys` dataset and make yourself familiar with its contents.**
+
+To learn more about the contents of the data, use one of the two following help commands:
+```{r}
+help(boys)
+?boys
+```
+
+---
+
+14. **It seems that the `boys` data are sorted based on `age`. Verify this.** 
+
+---
+
+15. **Use a pipe to calculate the correlation between `hgt` and `wgt` in the `boys` data set from package `mice`.**
+
+---
+
+16. **In the `boys` data set, `hgt` is recorded in centimeters. Use a pipe to transform `hgt` in the `boys` dataset to height in meters and verify the transformation**
+
+---
+
+17. **Use a pipe to plot the pair (`hgt`, `wgt`) two times: once for `hgt` in meters and once for `hgt` in centimeters. Make the points in the 'centimeter' plot `red` and in the 'meter' plot `blue`. **
+
+Hint: use the `%T>%` pipe. 
+
+---
+
+## Visualization
+
+---
+
+18. **Function `plot()` is the core plotting function in `R`. Find out more about `plot()`: Try both the help in the help-pane and `?plot` in the console. Look at the examples by running `example(plot)`.**
+
+The help tells you all about a functions arguments (the input you can specify), as well as the element the function returns to the Global Environment. There are strict rules for publishing packages in R. For your packages to appear on the Comprehensive R Archive Network (CRAN), a rigorous series of checks have to be passed. As a result, all user-level components (functions, datasets, elements) that are published, have an acompanying documentation that elaborates how the function should be used, what can be expected, or what type of information a data set contains. Help files often contain example code that can be run to demonstrate the workings. 
+
+```{r}
+?plot
+example(plot)
+```
+
+There are many more functions that can plot specific types of plots. For example, function `hist()` plots histograms, but falls back on the basic `plot()` function. Packages `lattice` and `ggplot2` are excellent packages to use for complex plots. Pretty much any type of plot can be made in R. A good reference for packages `lattice` that provides all `R`-code can be found at [http://lmdvr.r-forge.r-project.org/figures/figures.html](http://lmdvr.r-forge.r-project.org/figures/figures.html). Alternatively, all ggplot2 documentation can be found at [http://docs.ggplot2.org/current/](http://docs.ggplot2.org/current/)
+
+---
+
+19. **Create a scatterplot between `age` and `bmi` in the `mice::boys` data set**
+
+---
+
+20. **Now recreate the plot with the following specifications:**
+
+- If `bmi < 18.5` use `color = "light blue"`
+- If `bmi > 18.5 & bmi < 25` use `color = "light green"`
+- If `bmi > 25 & bmi < 30` use `color = "orange"`
+- If `bmi > 30` use `color = "red"`
+
+Hint: it may help to expand the data set with a new variable. 
+
+---
+
+21. **Create a histogram for `age` in the `boys` data set**
+
+---
+
+22. **Create a bar chart for `reg` in the boys data set**
+
+---
+
+23. **Create a box plot for `hgt` with different boxes for `reg` in the `boys` data set**
+
+---
+
+24. **Create a density plot for `age` with different curves for boys from the `city` and boys from rural areas (`!city`).**
+
+---
+
+25. **Create a diverging bar chart for `hgt` in the `boys` data set, that displays for every `age` year that year's mean height in deviations from the overall average `hgt`**
+
+```{r echo = FALSE}
+boys %>%
+  mutate(Hgt = hgt - mean(hgt, na.rm = TRUE),
+         Age = cut(age, 0:22, labels = 0:21)) %>%
+  aggregate(Hgt ~ Age, data = ., mean) %>% #specify data = . to allow formula
+  mutate(Diff = cut(Hgt, c(-Inf, 0, Inf),
+                    labels = c("Below Average", "Above Average"))) %>%
+  ggplot(aes(x = Age, y = Hgt, fill = Diff)) + 
+  geom_bar(stat = "identity") +
+  coord_flip()
+```
+
+---
+
+End of Practical
+
+---
+
+# Useful References
+
+- [The `ggplot2` reference page](https://ggplot2.tidyverse.org/reference/index.html)
+- [`magrittr`](https://magrittr.tidyverse.org)
+- [`R` for Data Science](http://r4ds.had.co.nz) - [Chapter 18 on pipes](http://r4ds.had.co.nz/pipes.html)
+- Anscombe, Francis J. (1973) [Graphs in statistical analysis](http://www.sjsu.edu/faculty/gerstman/StatPrimer/anscombe1973.pdf). American Statistician, 27, 17–21.

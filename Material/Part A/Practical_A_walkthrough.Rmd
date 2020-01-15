@@ -1,0 +1,698 @@
+---
+title: "Practical A"
+author: "Gerko Vink"
+date: ""
+output: 
+   html_document:
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    number_sections: false
+---
+  
+<style type="text/css">
+  
+body{ /* Normal  */
+  font-size: 12px;
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 18px;
+  color: DarkBlue;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+}
+h2 { /* Header 2 */
+  font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+}
+code.r{ /* Code block */
+  font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+  font-size: 14px;
+}
+</style>
+  
+---
+  
+```{r echo=FALSE}
+printAnswers <- TRUE
+```
+
+We use the following packages in this Practical:
+```{r message=FALSE, warning = FALSE}
+library(dplyr)     # for data manipulation
+library(magrittr)  # for pipes
+library(ggplot2)   # for visualization
+library(mice)      # for the boys data
+```
+
+---
+
+# Exercises
+
+---
+
+## `for`-loops
+
+---
+
+1. **Create a `for`-loop that loops over all numbers between 0 and 10, but only prints numbers below 5. **
+
+```{r echo=printAnswers, eval=printAnswers}
+for (i in 0:10) {
+  if (i < 5) {
+    print(i)
+  }
+}
+```
+
+---
+
+2. **Modify the for loop to only print the numbers 3, 4, and 5.**
+
+```{r echo=printAnswers, eval=printAnswers}
+for (i in 0:10) {
+  if (i >= 3 & i <= 5) {
+    print(i)
+  }
+}
+```
+Or, even more efficiently:
+```{r}
+for (i in 0:10) {
+  if (i %in% 3:5) {
+    print(i)
+  }
+}
+```
+
+
+---
+
+3. **Try to do the same thing without a for-loop, by subsetting a vector from 0 to 10 directly.**
+
+```{r echo=printAnswers, eval=printAnswers}
+num <- 0:10
+num[num >= 3 & num <=5]
+``` 
+or, alternatively,
+```{r}
+subset(num, num >= 3 & num <=5)
+```
+
+---
+
+4. **Recreate the following matrix, where 1 to eight are multiplied by 1 on the first row, 2 on the second, etc. Tip: use `byrow = TRUE` to fill a matrix left-to-right instead of top-to-bottom.**
+```{r echo=FALSE, eval=TRUE}
+
+# Create a matrix with 1 to 8. 
+mat <- matrix(1:8, ncol=8, nrow=5, byrow = TRUE)
+
+# Loop over each row, and multiply it. 
+for (i in 1:5) {
+  mat[i, ] <- mat[i, ] * i
+}
+
+mat
+``` 
+
+```{r echo=printAnswers, eval=TRUE}
+
+# Create a matrix with 1 to 8. 
+mat <- matrix(1:8, ncol=8, nrow=5, byrow = TRUE)
+
+# Loop over each row, and multiply it. 
+for (i in 1:5) {
+  mat[i, ] <- mat[i, ] * i
+}
+
+mat
+``` 
+
+---
+
+5. **Create a 6 by 6 matrix of strings, where each cell contains "row + column = sum".  For example, the second row, third column would yield "2 + 3 = 6". Tip: Create an empty 6x6 matrix first and fill it with values later. **
+
+```{r echo=printAnswers, eval=printAnswers}
+string.mat <- matrix(NA, ncol = 6, nrow = 6)
+
+for (i in 1:6) {
+  for (j in 1:6) {
+    string.mat[i, j] <- paste(i, "+", j, "=", i+j, sep="")
+  }
+}
+
+string.mat
+```
+
+---
+
+6. **Modify your loop to put `"Sum > 8"` in the matrix in the cells where that is true.** 
+
+```{r echo=printAnswers, eval=printAnswers}
+string.mat <- matrix(NA, ncol = 6, nrow = 6)
+
+for (i in 1:6) {
+  for (j in 1:6) {
+    if (i+j <= 8) {
+      string.mat[i, j] <- paste(i, "+", j, "=", i+j, sep="")
+    } else {
+      string.mat[i, j] <- "Sum > 8"
+    }
+  }
+}
+
+string.mat
+```
+
+---
+
+The `anscombe` data set is a wonderful data set from 1973 by Francis J. Anscombe aimed to demonstrate that pairs of variables can have the same statistical properties, while having completely differnt graphical representations. We will be using this data set more this week. If you'd like to know more about `anscombe`, you can simply call `?anscombe` to enter the help.
+
+You can directly call `anscombe` from your console because the `datasets` package is a base package in `R`. This means that it is always included and loaded when you start an `R` instance. In general, when you would like to access functions or data sets from packages that are not automatically loaded, we don't have to explicitly load the package. We can also call `package::thing-we-need` to directly 'grab' the `thing-we-need` from the `package` namespace. For example,  
+```{r}
+test <- datasets::anscombe
+identical(test, anscombe) #test if identical
+```
+
+This is especially handy within functions, as we can call `package::function-name` to borrow functionality from installed packages, without loading the whole package. Calling only those functions that you need is more memory-efficient than loading it all. More memory efficient means faster computation. 
+
+---
+
+7. **Display summary statistics (for example, using `summary`) for each column of the `anscombe` dataset from the `datasets` package**
+
+```{r echo=printAnswers, eval=printAnswers, message=FALSE}
+# Using i as an indicator for the current column.
+for (i in 1:ncol(anscombe)) {
+  print(colnames(anscombe)[i])
+  print(summary(anscombe[, i]))
+}
+
+# Looping over the variables directly. 
+# Although the code is a bit more clear, this does mean that we can not access the names of the variables.
+# So the output is less clear. 
+for (i in anscombe) {
+  print(summary(i))
+}
+```
+
+---
+
+## `apply()`
+
+---
+
+8. **Display summary statistics for each column of the `anscombe` dataset using `apply()`.**
+
+```{r echo=printAnswers, eval=printAnswers}
+apply(X = anscombe, MARGIN = 2, FUN = summary)
+```
+
+Remember that in `R`, the first indicator in square brackets always indicates the row, and the second indicator always indicates the column, such that `anscombe[2, 3]` would give us the value for the intersection of the second row and the third column. The same rationale translates to the margins we would like `apply()` to iterate over. The argument `MARGIN = 2` specifies the columns, while `MARGIN = 1` would indicate that a function should be applied over the rows: 
+
+```{r echo=printAnswers, eval=printAnswers}
+apply(anscombe, 1, summary)
+```
+We now see a returned matrix of `11` columns, that give us the `summary()` over the 11 rows in the `anscombe` data set.
+```{r}
+dim(anscombe)
+```
+
+
+---
+
+9. **Display summary statistics for each column of the `anscombe` dataset using `sapply()`. **
+
+```{r echo=printAnswers, eval=printAnswers}
+sapply(anscombe, summary)
+```
+We can see that `sapply()` returns a matrix. We don't have to specify any margins as the `anscombe` data set is of class `data.frame`: 
+```{r}
+class(anscombe)
+```
+Objects of class `data.frame` can be addressed as a list, where the columns are the listed elements (see Lecture B). The function `summary()` will automatically be applied over the listed elements. 
+
+---
+
+10. **Display summary statistics for each column of the `anscombe` dataset using `lapply()`. **
+
+```{r echo=printAnswers, eval=printAnswers}
+lapply(anscombe, summary)
+```
+
+Function `lapply()` behaves just like `sapply()` - in fact, `sapply()` is a more user-friendly version of `lapply()`, but returns a list rather than a matrix. I, personally, prefer the `sapply()` - or the equivalent `apply()` over the columns - solution for `anscombe` data set. However, if a data set has many dimensions, the return from `lapply()` may be much more flexible to work with.   
+
+---
+
+## Pipes
+
+--- 
+
+11. **Use a pipe to do the following:**
+
+- draw 1000 values from a normal distribution with `mean = 5` and `sd = 1` - $N(5, 1)$, 
+- create a matrix where the first 500 values are the first column and the second 500 values are the second column **
+- make a scatterplot of these two columns
+```{r}
+rnorm(1000, 5) %>%
+  matrix(ncol = 2) %>%
+  plot()
+```
+
+---
+
+12. **Use a pipe to calculate the correlation matrix on the `anscombe` data set**
+
+```{r}
+anscombe %>%
+  cor()
+```
+
+---
+
+13. **Now use a pipe to calculate the correlation for the pair (`x4`, `y4`) on the `anscombe` data set**
+
+Using the standard `%>%` pipe:
+```{r}
+anscombe %>%
+  subset(select = c(x4, y4)) %>%
+  cor()
+```
+Alternatively, we can use the `%$%` pipe from package `magrittr` to make this process much more efficient.
+```{r}
+anscombe %$%
+  cor(x4, y4)
+```
+
+---
+
+The `boys` dataset is part of package `mice`. It is a subset of 748 Dutch boystaken from the Fourth Dutch Growth Study. It's columns record a variety of growth measures. Inspect the help for `boys` dataset and make yourself familiar with its contents.**
+
+To learn more about the contents of the data, use one of the two following help commands:
+```{r}
+help(boys)
+?boys
+```
+
+---
+
+14. **It seems that the `boys` data are sorted based on `age`. Verify this.** 
+
+To verify if the data are indeed sorted, we can run the following command to test the complement of that statement. Remember that we can always search the help for functions: e.g. we could have searched here for `?sort` and we would quickly have ended up at function `is.unsorted()` as it tests whether an object is **not sorted**. 
+
+```{r}
+is.unsorted(boys$age)
+```
+Or with a pipe:
+```{r}
+boys %$%
+  is.unsorted(age)
+```
+
+which returns `FALSE`, indicating that boys' age is indeed sorted (we asked if it was unsorted!). To directly test if it is sorted, we could have used
+```{r}
+!is.unsorted(boys$age)
+```
+```{r}
+boys %$%
+  !is.unsorted(age)
+```
+which tests if data data are not unsorted. In other words the values `TRUE` and `FALSE` under `is.unsorted()` turn into `FALSE` and `TRUE` under `!is.unsorted()`, respectively. 
+
+---
+
+15. **Use a pipe to calculate the correlation between `hgt` and `wgt` in the `boys` data set from package `mice`.**
+
+Because `boys` has missings values for almost all variables, we must first select `wgt` and `hgt` and then omit the rows that have missing values, before we can calculate the correlation. Using the standard `%>%` pipe, this would look like:
+```{r}
+boys %>%
+  subset(select = c("wgt", "hgt")) %>%
+  cor(use = "pairwise.complete.obs")
+```
+which is equivalent to 
+```{r}
+boys %>%
+  subset(select = c("wgt", "hgt")) %>%
+  na.omit() %>%
+  cor()
+```
+
+Alternatively, we can use the `%$%` pipe:
+```{r}
+boys %$% 
+  cor(hgt, wgt, use = "pairwise.complete.obs")
+```
+The `%$%` pipe *unfolds* the listed dimensions of the `boys` dataset, such that we can refer to them directly. 
+
+---
+
+16. **In the `boys` data set, `hgt` is recorded in centimeters. Use a pipe to transform `hgt` in the `boys` dataset to height in meters and verify the transformation**
+
+Using the standard `%>%` and the `%$%` pipes:
+```{r}
+boys %>%
+  transform(hgt = hgt / 100) %$%
+  mean(hgt, na.rm = TRUE)
+```
+
+Alternatively, we could also use the `mutate()` function. 
+```{r}
+boys %>%
+  mutate(hgt = hgt / 100) %$%
+  mean(hgt, na.rm = TRUE)
+```
+The `mutate()` function is more flexible than `transform()` as it allows for more complex data manipulation other than mere transformation. 
+
+---
+
+17. **Use a pipe to plot the pair (`hgt`, `wgt`) two times: once for `hgt` in meters and once for `hgt` in centimeters. Make the points in the 'centimeter' plot `red` and in the 'meter' plot `blue`. **
+
+This is best done with the `%T>%` pipe:
+```{r}
+boys %>%
+  subset(select = c(hgt, wgt)) %T>%
+  plot(col = "red", main = "Height in centimeters") %>%
+  transform(hgt = hgt / 100) %>%
+  plot(col = "blue", main = "Height in meters")
+```
+
+The `%T>%` pipe is very useful, because it creates a literal `T` junction in the pipe. It is perhaps most informative to graphically represent the above pipe as follows:
+```{r eval=FALSE}
+boys %>%
+  subset(select = c(hgt, wgt)) %T>%
+  plot(col = "red", main = "Height in centimeters") %>%
+  transform(hgt = hgt / 100) %>%
+  plot(col = "blue", main = "Height in meters")
+```
+![](flow_t_pipe.png)
+
+We can see that there is indeed a literal T-junction. Naturally, we can expand this process with more `%T>%` pipes. However, once a pipe gets too long or too complicated, it is perhaps more useful to cut the piped problem into smaller, manageble pieces. 
+
+---
+
+## Visualization
+
+---
+
+18. **Function `plot()` is the core plotting function in `R`. Find out more about `plot()`: Try both the help in the help-pane and `?plot` in the console. Look at the examples by running `example(plot)`.**
+
+The help tells you all about a functions arguments (the input you can specify), as well as the element the function returns to the Global Environment. There are strict rules for publishing packages in R. For your packages to appear on the Comprehensive R Archive Network (CRAN), a rigorous series of checks have to be passed. As a result, all user-level components (functions, datasets, elements) that are published, have an acompanying documentation that elaborates how the function should be used, what can be expected, or what type of information a data set contains. Help files often contain example code that can be run to demonstrate the workings. 
+
+```{r}
+?plot
+example(plot)
+```
+
+There are many more functions that can plot specific types of plots. For example, function `hist()` plots histograms, but falls back on the basic `plot()` function. Packages `lattice` and `ggplot2` are excellent packages to use for complex plots. Pretty much any type of plot can be made in R. A good reference for packages `lattice` that provides all `R`-code can be found at [http://lmdvr.r-forge.r-project.org/figures/figures.html](http://lmdvr.r-forge.r-project.org/figures/figures.html). Alternatively, all ggplot2 documentation can be found at [http://docs.ggplot2.org/current/](http://docs.ggplot2.org/current/)
+
+---
+
+19. **Create a scatterplot between `age` and `bmi` in the `mice::boys` data set**
+
+With the standard plotting device in `R`:
+
+```{r cache=TRUE}
+mice::boys %$% plot(bmi ~ age)
+```
+
+or, with `ggplot2`:
+
+```{r cache=TRUE}
+p <- ggplot(mice::boys, aes(age, bmi))
+p + geom_point()
+```
+
+Package `ggplot2` offers far greater flexibility in data visualization than the standard plotting devices in `R`. However, it has its own language, which allows you to easily expand graphs with additional commands. To make these expansions or layers clearly visible, it is advisable to use the plotting language conventions. For example,
+
+```{r, eval = FALSE}
+mice::boys %>% 
+  ggplot(aes(age, bmi)) +
+  geom_point()
+```
+
+would yield the same plot as 
+
+```{r, eval = FALSE}
+ggplot(mice::boys, aes(age, bmi)) + geom_point()
+```
+but the latter style may be less informative, especially if more customization takes place and if you share your code with others. 
+
+---
+
+20. **Now recreate the plot with the following specifications:**
+
+- If `bmi < 18.5` use `color = "light blue"`
+- If `bmi > 18.5 & bmi < 25` use `color = "light green"`
+- If `bmi > 25 & bmi < 30` use `color = "orange"`
+- If `bmi > 30` use `color = "red"`
+
+Hint: it may help to expand the data set with a new variable. 
+
+It may be easier to create a new variable that creates the specified categories. We can use the `cut()` function to do this quickly
+
+```{r cache=TRUE}
+boys2 <- 
+  boys %>%
+  mutate(class = cut(bmi, c(0, 18.5, 25, 30, Inf),
+                    labels = c("underweight",
+                               "healthy",
+                               "overweight",
+                               "obese")))
+```
+
+by specifying the boundaries of the intervals. In this case we obtain 4 intervals: `0-18.5`, `18.5-25`, `25-30` and `30-Inf`. We used the `%>%` pipe to work with `bmi` directly. Alternatively, we could have done this without a pipe:
+
+```{r cache=TRUE}
+boys3 <- boys
+boys3$class <- cut(boys$bmi, c(0, 18.5, 25, 30, Inf), 
+                   labels = c("underweight",
+                              "healthy",
+                              "overweight",
+                              "obese"))
+```
+
+to obtain the same result. 
+
+With the standard plotting device in `R` we can now specify:
+
+```{r cache=TRUE}
+plot(bmi ~ age, subset = class == "underweight", col = "light blue", data = boys2, 
+     ylim = c(10, 35), xlim = c(0, 25))
+points(bmi ~ age, subset = class == "healthy", col = "light green", data = boys2)
+points(bmi ~ age, subset = class == "overweight", col = "orange", data = boys2)
+points(bmi ~ age, subset = class == "obese", col = "red", data = boys2)
+```
+
+and with `ggplot2` we can call
+
+```{r cache=TRUE}
+boys2 %>%
+  ggplot() +
+  geom_point(aes(age, bmi, col = class))
+```
+
+Although the different classifications have different colours, the colours are not conform the specifications of this exercise. We can manually override this:
+
+```{r cache=TRUE}
+boys2 %>%
+  ggplot() +
+  geom_point(aes(age, bmi, col = class)) +
+  scale_color_manual(values = c("light blue", "light green", "orange", "red"))
+```
+
+Because there are missing values, `ggplot2` displays a warning message. If we would like to not consider the missing values when plotting, we can simply exclude the `NA`s by using a `filter()`:
+
+```{r cache=TRUE}
+boys2 %>% 
+  filter(!is.na(class)) %>%
+  ggplot() +
+  geom_point(aes(age, bmi, col = class)) +
+  scale_color_manual(values = c("light blue", "light green", "orange", "red"))
+```
+
+Specifying a filter on the feature `class` is sufficient: age has no missings and the missings in `class` directly correspond to missing values on `bmi`. Filtering on `bmi` would therefore yield an identical plot.
+
+---
+
+21. **Create a histogram for `age` in the `boys` data set**
+
+With the standard plotting device in `R`:
+
+```{r cache=TRUE}
+boys %$%
+  hist(age, breaks = 50)
+```
+
+The `breaks = 50` overrides the default breaks between the bars. By default the plot would be
+
+```{r cache=TRUE}
+boys %$%
+  hist(age)
+```
+Using a pipe is a nice approach for this plot because it inherits the names of the objects we aim to plot. Without the pipe we might need to adjust the main title for the histogram:
+
+```{r cache=TRUE}
+hist(boys$age, breaks = 50)
+```
+
+With `ggplot2`:
+
+```{r cache=TRUE}
+boys %>%
+  ggplot() + 
+  geom_histogram(aes(age), binwidth = .4)
+```
+
+Please note that the plots from `geom_histogram()` and `hist` use different calculations for the bars (bins) and hence may look slightly different.
+
+---
+
+22. **Create a bar chart for `reg` in the boys data set**
+
+With a standard plotting device in `R`:
+
+```{r cache=TRUE}
+boys %$%
+  table(reg) %>%
+  barplot()
+```
+
+With `ggplot2`:
+
+```{r cache=TRUE}
+boys %>%
+  ggplot() + 
+  geom_bar(aes(reg))
+```
+
+Note that `geom_bar` by default plots the `NA`'s, while `barplot()` omits the `NA`'s without warning. If we would not like to plot the `NA`s, then a simple `filter()` (see exercise 2) on the `boys` data is efficient. 
+
+---
+
+23. **Create a box plot for `hgt` with different boxes for `reg` in the `boys` data set**
+
+With a standard plotting device in `R`:
+
+```{r cache=TRUE}
+boys %$%
+  boxplot(hgt ~ reg)
+```
+
+With `ggplot2`:
+
+```{r cache=TRUE}
+boys %>%
+  ggplot(aes(reg, hgt)) +
+  geom_boxplot()
+```
+
+---
+
+24. **Create a density plot for `age` with different curves for boys from the `city` and boys from rural areas (`!city`).**
+
+With a standard plotting device in `R`:
+
+```{r cache=TRUE}
+d1 <- boys %>%
+  subset(reg == "city") %$%
+  density(age)
+d2 <- boys %>%
+  subset(reg != "city") %$% 
+  density(age)
+
+plot(d1, col = "red", ylim = c(0, .08)) 
+lines(d2, col = "blue") 
+
+```
+
+The above plot can also be generated without pipes, but results in an *ugly* main title. You may edit the title via the `main` argument in the `plot()` function.
+
+```{r cache=TRUE}
+plot(density(boys$age[!is.na(boys$reg) & boys$reg == "city"]), 
+     col = "red", 
+     ylim = c(0, .08))
+lines(density(boys$age[!is.na(boys$reg) & boys$reg != "city"]), 
+      col = "blue")
+```
+
+With `ggplot2` everything looks much nicer:
+
+```{r cache=TRUE}
+boys %>%
+  mutate(area = ifelse(reg == "city", "city", "rural")) %>%
+  filter(!is.na(area)) %>%
+  ggplot(aes(age, fill = area)) +
+  geom_density(alpha = .3) # some transparency
+```
+
+---
+
+25. **Create a diverging bar chart for `hgt` in the `boys` data set, that displays for every `age` year that year's mean height in deviations from the overall average `hgt`**
+
+Let's not make things too complicated and just focus on `ggplot2`:
+
+```{r}
+boys %>%
+  mutate(Hgt = hgt - mean(hgt, na.rm = TRUE),
+         Age = cut(age, 0:22, labels = 0:21)) %>%
+  aggregate(Hgt ~ Age, data = ., mean) %>% #specify data = . to allow formula
+  mutate(Diff = cut(Hgt, c(-Inf, 0, Inf),
+                    labels = c("Below Average", "Above Average"))) %>%
+  ggplot(aes(x = Age, y = Hgt, fill = Diff)) + 
+  geom_bar(stat = "identity") +
+  coord_flip()
+```
+
+We can clearly see that the average height in the group is reached just before age 7. The `aggregate()` function is used to return the `mean()` of deviation `Hgt` for every group in `Age`. 
+
+For example, if we would like the mean height `hgt` for every region `reg` in the `boys` data, we could call:
+
+```{r}
+boys %>%
+  aggregate(hgt ~ reg, data = ., FUN = mean)
+```
+
+We have to specify `data = .` in order to allow for the formula-style call to `aggregate()` - where the method is of class `formula`. However, the data set `boys` is parsed down the pipe as an object of class `data.frame`. The default evaluation of argument would therefore be
+```{r eval=FALSE}
+aggregate(x, by, FUN)
+```
+
+and in the pipe this is by default evaluated as 
+
+```{r eval=FALSE}
+aggregate(., hgt ~ reg, mean)
+```
+
+where `.` is the object parsed down the pipe. This `.` is automatically evaluated as the first argument, unless otherwise specified by the user. In most cases this works because the data is usually the first argument that is evaluated in a function. However, the result is not a valid call to `aggregate()` because the object we're parsing down the pipe has class `data.frame`. `aggregate()` would therefor try to run `aggregate.data.frame()`, but our code dictates an evaluation of the formula call. By assigning the `.` to `data = .`, we specifically call for a `formula` evaluation of `aggregate()`. This solves the mismatch and forces `aggregate()` to conform to class `formula`:
+```{r eval=FALSE}
+aggregate(formula, data, FUN)
+```
+
+which is evaluated as 
+
+```{r eval=FALSE}
+aggregate(hgt ~ reg, data = ., mean)
+```
+in the pipe. Problem solved!
+
+The specifics about calling functions and evaluating their arguments can always be found in the help. Try `?aggregate` to see all forms this function's call may take. 
+
+---
+
+End of Practical
+
+---
+
+# Useful References
+
+- [The `ggplot2` reference page](https://ggplot2.tidyverse.org/reference/index.html)
+- [`magrittr`](https://magrittr.tidyverse.org)
+- [`R` for Data Science](http://r4ds.had.co.nz) - [Chapter 18 on pipes](http://r4ds.had.co.nz/pipes.html)
+- Anscombe, Francis J. (1973) [Graphs in statistical analysis](http://www.sjsu.edu/faculty/gerstman/StatPrimer/anscombe1973.pdf). American Statistician, 27, 17–21.

@@ -1,0 +1,13 @@
+---
+title: "Archive Placeholder"
+author: ""
+date: "Statistical Programming with R"
+output: html_document
+---
+
+This document serves as an placeholder for the Course Material Archive.
+The archive is can be obtained from this link after the course has ended.
+
+All the best, 
+
+Gerko

@@ -2868,12 +2868,13 @@ Package <code>DAAG</code> has been archived, but you can still install it via th
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">url &lt;-<span class="st"> &quot;https://cran.r-project.org/src/contrib/Archive/DAAG/DAAG_1.22.1.tar.gz&quot;</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">pkgFile &lt;-<span class="st"> &quot;DAAG.1.22.1.tar.gz&quot;</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">download.file</span>(<span class="dt">url =</span> url, <span class="dt">destfile =</span> pkgFile)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co"># Install package</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="kw">install.packages</span>(<span class="dt">pkgs=</span>pkgFile, <span class="dt">type=</span><span class="st">&quot;source&quot;</span>, <span class="dt">repos=</span><span class="ot">NULL</span>)</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co"># Delete package tarball</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="kw">unlink</span>(pkgFile)</a></code></pre></div>
+<a class="sourceLine" id="cb3-4" data-line-number="4">devtools<span class="op">::</span><span class="kw">install_version</span>(<span class="st">&quot;latticeExtra&quot;</span>, <span class="dt">version =</span> <span class="st">&quot;0.6-28&quot;</span>, <span class="dt">dependencies =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co"># Install package</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="kw">install.packages</span>(<span class="dt">pkgs=</span>pkgFile, <span class="dt">type=</span><span class="st">&quot;source&quot;</span>, <span class="dt">repos=</span><span class="ot">NULL</span>)</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># Delete package tarball</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="kw">unlink</span>(pkgFile)</a></code></pre></div>
 </div>
 </div>
 </div>

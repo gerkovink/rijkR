@@ -129,6 +129,7 @@ Package `DAAG` has been archived, but you can still install it via the below scr
 url <- "https://cran.r-project.org/src/contrib/Archive/DAAG/DAAG_1.22.1.tar.gz"
 pkgFile <- "DAAG.1.22.1.tar.gz"
 download.file(url = url, destfile = pkgFile)
+devtools::install_version("latticeExtra", version = "0.6-28", dependencies = FALSE)
 
 # Install package
 install.packages(pkgs=pkgFile, type="source", repos=NULL)

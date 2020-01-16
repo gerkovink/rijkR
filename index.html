@@ -2859,6 +2859,22 @@ window.FlexDashboardComponents.push({
 <h3>If RStudio is extremely slow</h3>
 <p><a href="https://gist.github.com/vankesteren/f2e198aa5ab4f6262b21a3d13bbea0b5">This guide</a> works to solve most problems on Utrecht University’s HP laptops. Perhaps it helps you too.</p>
 </div>
+<div id="install-daag" class="section level3">
+<h3>Install <code>DAAG</code></h3>
+Package <code>DAAG</code> has been archived, but you can still install it via the below script:
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">url &lt;-<span class="st"> &quot;https://cran.r-project.org/src/contrib/Archive/DAAG/DAAG_1.22.1.tar.gz&quot;</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">pkgFile &lt;-<span class="st"> &quot;DAAG.1.22.1.tar.gz&quot;</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">download.file</span>(<span class="dt">url =</span> url, <span class="dt">destfile =</span> pkgFile)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co"># Install package</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="kw">install.packages</span>(<span class="dt">pkgs=</span>pkgFile, <span class="dt">type=</span><span class="st">&quot;source&quot;</span>, <span class="dt">repos=</span><span class="ot">NULL</span>)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co"># Delete package tarball</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="kw">unlink</span>(pkgFile)</a></code></pre></div>
+</div>
 </div>
 </div>
 <div id="assumed-skills" class="section level1">

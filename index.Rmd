@@ -123,6 +123,21 @@ Naturally, you will need internet access for these services to be accessed.
 
 [This guide](https://gist.github.com/vankesteren/f2e198aa5ab4f6262b21a3d13bbea0b5) works to solve most problems on Utrecht University's HP laptops. Perhaps it helps you too. 
 
+### Install `DAAG`
+Package `DAAG` has been archived, but you can still install it via the below script:
+```{r echo = TRUE, eval = FALSE}
+url <- "https://cran.r-project.org/src/contrib/Archive/DAAG/DAAG_1.22.1.tar.gz"
+pkgFile <- "DAAG.1.22.1.tar.gz"
+download.file(url = url, destfile = pkgFile)
+
+# Install package
+install.packages(pkgs=pkgFile, type="source", repos=NULL)
+
+# Delete package tarball
+unlink(pkgFile)
+```
+
+
 # Assumed skills
 
 ## Column 1

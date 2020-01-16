@@ -44,6 +44,71 @@ Vectors, matrices and arrays can be **either numeric or character**. Objects tha
 - dataframes: a combination of equal length vectors into 2 dimensions
 - lists: a combination of whatever you want
 
+## Vectors
+```{r}
+c(1, 3, 5, 2, 6, 4)
+v <- 1:6
+v
+v[4]
+```
+
+## Matrices
+```{r}
+m <- matrix(1:6, nrow = 3, ncol = 2)
+m
+m[1, ]
+m[, 2]
+```
+
+## Data frames
+```{r}
+d <- data.frame(numbers = 1:3, 
+                letters = c("a", "b", "c"),
+                V3 = c(TRUE, FALSE, TRUE))
+d
+d$numbers
+d$letters
+```
+
+## Lists
+```{r}
+l <- list(vector = v, dframe = d)
+l
+l$vector
+l$dframe$numbers
+```
+
+## Some programming tips:
+- keep your code tidy
+- use comments (text preceded by `#`) to clarify what you are doing
+    - If you look at your code again, one month from now: you will not know what you did --> unless you use comments 
+
+- when working with functions, use the TAB key to quickly access the help for the function's components
+- work with logically named `R`-scripts
+    - indicate the sequential nature of your work
+- work with `RStudio` projects
+- if allowed, place your project folders in some cloud-based environment
+
+## Functions
+
+Functions have parentheses `()`. Names directly followed by parentheses always indicate functions. For example; 
+
+ - `matrix()` is a function
+ - `c()` is a function
+ - but `(1 - 2) * 5` is a calculation, not a function
+
+## Packages
+Packages give additional functionality to `R`. 
+
+By default, some packages are included. These packages allow you to do mainstream statistical analyses and data manipulation. Installing additional packages allow you to perform the state of the art in statistical programming and estimation. 
+
+The cool thing is that these packages are all developed by users. The throughput process is therefore very timely:
+
+  - newly developed functions and software are readily available
+  - this is different from other mainstream software, like SPSS, where new methodology may take years to be implemented. 
+
+A list of available packages can be found on [CRAN](https://cran.r-project.org)
+
 ## Functions
 
 Functions have parentheses `()`. Names directly followed by parentheses always indicate functions. For example; 

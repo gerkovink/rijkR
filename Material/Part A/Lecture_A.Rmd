@@ -44,52 +44,6 @@ Vectors, matrices and arrays can be **either numeric or character**. Objects tha
 - dataframes: a combination of equal length vectors into 2 dimensions
 - lists: a combination of whatever you want
 
-## Vectors
-```{r}
-c(1, 3, 5, 2, 6, 4)
-v <- 1:6
-v
-v[4]
-```
-
-## Matrices
-```{r}
-m <- matrix(1:6, nrow = 3, ncol = 2)
-m
-m[1, ]
-m[, 2]
-```
-
-## Data frames
-```{r}
-d <- data.frame(numbers = 1:3, 
-                letters = c("a", "b", "c"),
-                V3 = c(TRUE, FALSE, TRUE))
-d
-d$numbers
-d$letters
-```
-
-## Lists
-```{r}
-l <- list(vector = v, dframe = d)
-l
-l$vector
-l$dframe$numbers
-```
-
-
-## Some programming tips:
-- keep your code tidy
-- use comments (text preceded by `#`) to clarify what you are doing
-    - If you look at your code again, one month from now: you will not know what you did --> unless you use comments 
-
-- when working with functions, use the TAB key to quickly access the help for the function's components
-- work with logically named `R`-scripts
-    - indicate the sequential nature of your work
-- work with `RStudio` projects
-- if allowed, place your project folders in some cloud-based environment
-
 ## Functions
 
 Functions have parentheses `()`. Names directly followed by parentheses always indicate functions. For example; 
@@ -97,18 +51,6 @@ Functions have parentheses `()`. Names directly followed by parentheses always i
  - `matrix()` is a function
  - `c()` is a function
  - but `(1 - 2) * 5` is a calculation, not a function
-
-## Packages
-Packages give additional functionality to `R`. 
-
-By default, some packages are included. These packages allow you to do mainstream statistical analyses and data manipulation. Installing additional packages allow you to perform the state of the art in statistical programming and estimation. 
-
-The cool thing is that these packages are all developed by users. The throughput process is therefore very timely:
-
-  - newly developed functions and software are readily available
-  - this is different from other mainstream software, like SPSS, where new methodology may take years to be implemented. 
-
-A list of available packages can be found on [CRAN](https://cran.r-project.org)
 
 ## Loading packages
 Packages extend the basic functionality of `R`. 
@@ -132,35 +74,6 @@ Alternatively, you can also do it in `RStudio` through
 
 `Tools --> Install Packages`
 
-# `R` in depth
-
-## Workspaces and why you should sometimes save them
-A workspace contains all changes you made to `R`. 
-
-A saved workspace contains everything at the time of the state wherein it was saved. 
-
-You do not need to run all the previous code again if you would like to continue working at a later time. 
-
-- You can save the workspace and continue exactly where you left. 
-
-Workspaces are compressed and require relatively little memory when stored. The compression is very efficient and beats reloading large datasets. 
-
-## History and why it is useful
-`R` by default saves (part of) the code history and `RStudio` expands this functionality greatly. 
-
-Most often it may be useful to look back at the code history for various reasons.
-
-- There are multiple ways to access the code history.
-  
-    1. Use arrow up in the console. This allows you to go back in time, one codeline by one. Extremely useful to go back to previous lines for minor alterations to the code.
-    2. Use the history tab in the environment pane. The complete project history can be found here and the history can be searched. This is particularly convenient when you know what code you are looking for. 
-    
-## Working in projects in `RStudio`
-- Every project has its own history
-- Every research project has its own project
-- Every project can have its own folder, which also serves as a research archive
-- Every project can have its own version control system
-- R-studio projects can relate to Git (or other online) repositories
 
 ## In general...
 - Use common sense and BE CONSISTENT.
@@ -203,11 +116,10 @@ library(ggplot2)  # visualization
 
 # Data manipulation
 
-## The cats data
+## The `MASS::cats` data
 ```{r}
 head(cats)
 ```
-
 
 ```{r}
 str(cats)
@@ -240,22 +152,13 @@ head(heavy.cats)
 filter(cats, Bwt > 2, Bwt < 2.2, Sex == "F")
 ```
 
-
 ## Working with factors
 ```{r}
 class(cats$Sex)
 levels(cats$Sex)
 ```
 
-## Working with factors
-```{r}
-levels(cats$Sex) <- c("Female", "Male")
-table(cats$Sex)
-head(cats)
-```
-
 ## Sorting 
-
 ```{r}
 sort1 <- arrange(cats, Bwt)
 head(sort1)
@@ -263,20 +166,8 @@ sort2 <- arrange(cats, desc(Bwt))
 head(sort2)
 ```
 
-## Combining matrices or dataframes
-
-```{r}
-cats.numbers <- cbind(Weight = cats$Bwt, HeartWeight = cats$Hwt)
-head(cats.numbers)
-```
-
-## Combining matrices or dataframes
-```{r}
-rbind(cats[1:3, ], cats[1:5, ])
-```
-
-
 # Basic analysis
+
 ## Correlation
 
 ```{r}
@@ -320,21 +211,6 @@ plot(formula = Hwt ~ Sex, data = cats)
 * `Apply()`
 
 * Writing your own functions
-
-## New controls and functions 
-
-### New control flow constructs
-- `if(cond)` `expr`
-- `if(cond)` `cons.expr`  `else`  `alt.expr`
-- `for(var in seq)` `expr`
-
-### New functions
-- `rev()`: reverse version of an argument
-- `apply()`: apply a function to margins of a matrix
-- `sapply()`: apply a function to elements of a list, `vector` or `matrix` return
-- `lapply()`: apply a function to elements of a list, `list` return
-- `print()`: print an object to the console
-- `cat`: outputs an object with less conversion than `print()`
 
 # Conditionals and loops
 
@@ -462,6 +338,7 @@ However, the power of `apply()` is that it can use **any** function we throw at 
 
 ## `apply()` 
 ```{r} 
+set.seed(123)
 rand.mat <- matrix(rnorm(21), nrow = 3, ncol = 7)
 rand.mat
 apply(rand.mat, MARGIN = 1, FUN = max)
@@ -669,14 +546,6 @@ cats %$%
 is the same as 
 ```{r eval=FALSE}
 t.test(Hwt ~ Sex, data = cats)
-```
-
-## Storing a t-test from a pipe
-```{r}
-cats.test <- cats %$%
-  t.test(Bwt ~ Sex)
-
-cats.test
 ```
 
 # Data visualization with `ggplot2`

@@ -29,6 +29,7 @@ The course deals with the following topics:
 2.	Fitting statistical models: estimation, prediction and testing.
 3.	Basic statistical learning techniques.
 4.	Crossvalidation.
+5.  Clustering
 
 **The course starts at an intermediate level.** At the end of the course, participants will master advanced programming and scripting skills with R. Please follow [these exercises](https://www.gerkovink.com/prepR/#exercises) if you have doubts about your `R` skills. 
 
@@ -42,13 +43,21 @@ Participants are requested to bring their own laptop for lab meetings.
 
 | When?  |      | What?      |
 |:--------|:-------|:-------------|
-| 09.00 | 09.30  | Lecture |
-| 09:30 | 10.15  | Practical |
-| 10.15 | 10.45  | Discussion |
-|       | **break** |            |
-| 11.00 | 11.45  | Lecture |
-| 11.45 | 12.30  | Practical |
-| 12.30 | 13.00  | Discussion  |
+| 09.00 | 09.30  | Welcome |
+| 09.30 | 09.45  | Opening | 
+| 09.45 | 10.30  | Lecture A |
+|       | **break** |  |
+| 10.45 | 11.30  | Exercise A |
+|       | **break** |  |
+| 11.45 | 12.30 | Lecture B |
+|       | **lunch** |  |
+| 13.30 | 14.15 | Exercise B |
+|       | **break** |  |
+| 14.30 | 15.15  | Lecture C |
+|       | **break** |  |
+| 15.30 | 16.15  | Exercise C  |
+| 16.15 | 16.30  | Closing |
+
 
 # How to prepare
 
@@ -129,14 +138,24 @@ All the best,
 
 ## Column 1
 
-### The first day's materials
+### The course materials
 I usually adapt the course as we go. To ensure that you work with the latest iteration of the course materials, I advice all course participants to access the materials online.
 
-- Part A: Custom functions, Pipes and Data Visualization
+- Part A: Flow constructs, Pipes and Data Visualization
     - [Lecture A](Material/Part A/Lecture_A.html)
     - [Practical A](Material/Part A/Practical_A_walkthrough.html)
     - [Impractical A](Material/Part A/Practical_A.html)
     - The [boys.sav](Material/Part A/boys.sav) set used in the slides
+
+- Part B: linear modeling, prediction and crossvalidation
+    - [Lecture B](Material/Part B/Lecture_B.html)
+    - [Practical B](Material/Part B/Practical_B_walkthrough.html)
+    - [Impractical B](Material/Part B/Practical_B.html)
+
+- Part C: Supervised and unsupervised clustering
+    - [Lecture C](Material/Part A/Lecture_A.html)
+    - [Practical C](Material/Part A/Practical_A_walkthrough.html)
+    - [Impractical C](Material/Part A/Practical_A.html)
 
 All lectures are in `html` format. Practicals are walkthrough files that guide you through the exercises. `Impractical` files contain the exercises without walkthrough, explanations and solutions. 
 

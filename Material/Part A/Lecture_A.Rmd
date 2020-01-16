@@ -11,6 +11,12 @@ output:
 
 # Today 
 
+## Course Materials
+
+Everything for today (and more) can be found at
+
+[www.gerkovink.com/rijkR](https://www.gerkovink.com/rijkR/)
+
 ## This lecture
 
 - Data manipulation

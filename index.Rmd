@@ -43,14 +43,13 @@ Participants are requested to bring their own laptop for lab meetings.
 
 | When?  |      | What?      |
 |:--------|:-------|:-------------|
-| 09.00 | 09.30  | Welcome |
 | 09.30 | 09.45  | Opening | 
 | 09.45 | 10.30  | Lecture A |
 |       | **break** |  |
 | 10.45 | 11.30  | Exercise A |
 |       | **break** |  |
-| 11.45 | 12.30 | Lecture B |
-|       | **lunch** |  |
+| 11.45 | 12.45 | Lecture B |
+|       | **break** |  |
 | 13.30 | 14.15 | Exercise B |
 |       | **break** |  |
 | 14.30 | 15.15  | Lecture C |
@@ -59,7 +58,7 @@ Participants are requested to bring their own laptop for lab meetings.
 | 16.15 | 16.30  | Closing |
 
 
-# How to prepare
+# Prepare your machine
 
 ## Column 1
 
@@ -87,10 +86,10 @@ Rstudio is an Integrated Development Environment (IDE). It can be obtained as st
 Execute the following lines of code in the console window:
 
 ```{r eval=FALSE, echo = TRUE}
-install.packages(c("ggplot2", "tidyverse", "magrittr", "micemd", "jomo", "pan", 
+install.packages(c("ggplot2", "tidyverse", "dplyr", "magrittr", "micemd", "jomo", "pan", 
                  "lme4", "knitr", "rmarkdown", "plotly", "ggplot2", "shiny", 
                  "devtools", "boot", "class", "car", "MASS", "ggplot2movies", 
-                 "ISLR", "DAAG", "mice", "mitml", "miceadds"), 
+                 "ISLR", "DAAG", "mice"), 
                  dependencies = TRUE)
 ```
 
@@ -119,27 +118,7 @@ If all fails and you have insufficient rights to your machine, the following web
 
 Naturally, you will need internet access for these services to be accessed. 
 
-### If RStudio is extremely slow
-
-[This guide](https://gist.github.com/vankesteren/f2e198aa5ab4f6262b21a3d13bbea0b5) works to solve most problems on Utrecht University's HP laptops. Perhaps it helps you too. 
-
-### Install `DAAG`
-Package `DAAG` has been archived, but you can still install it via the below script:
-```{r echo = TRUE, eval = FALSE}
-url <- "https://cran.r-project.org/src/contrib/Archive/DAAG/DAAG_1.22.1.tar.gz"
-pkgFile <- "DAAG.1.22.1.tar.gz"
-download.file(url = url, destfile = pkgFile)
-devtools::install_version("latticeExtra", version = "0.6-28", dependencies = FALSE)
-
-# Install package
-install.packages(pkgs=pkgFile, type="source", repos=NULL)
-
-# Delete package tarball
-unlink(pkgFile)
-```
-
-
-# Assumed skills
+# Prepare yourself
 
 ## Column 1
 

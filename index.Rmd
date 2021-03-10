@@ -45,16 +45,17 @@ Participants are requested to bring their own laptop for lab meetings.
 |:--------|:-------|:-------------|
 | 09.30 | 09.45  | Opening | 
 | 09.45 | 10.30  | Lecture A |
-|       | **break** |  |
-| 10.45 | 11.30  | Exercise A |
+| 10.30 | 11.15  | Exercise A |
+| 11.15 | 11.30  | Discussion A |
 |       | **break** |  |
 | 11.45 | 12.45 | Lecture B |
 |       | **break** |  |
 | 13.30 | 14.15 | Exercise B |
+| 14.15 | 14.30  | Discussion B |
 |       | **break** |  |
-| 14.30 | 15.15  | Lecture C |
-|       | **break** |  |
-| 15.30 | 16.15  | Exercise C  |
+| 14.45 | 15.30  | Lecture C |
+| 15.30 | 16.00  | Exercise C  |
+| 16.00 | 16.15  | Discussion C |
 | 16.15 | 16.30  | Closing |
 
 

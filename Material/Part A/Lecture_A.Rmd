@@ -19,521 +19,48 @@ Everything for today (and more) can be found at
 
 ## This lecture
 
+- Pipes
+
 - Data manipulation
-
-- `for`-loops, `if` statements
-
-- custom functions
 
 - Basic analysis (correlation & t-test)
 
-- Pipes
-
 - Data visualization with `ggplot2`
-
-## The absolute basics
-
-We assign elements to objects in `R` like this:
-```{r}
-a <- 100
-b <- a^2
-```
-
-We can combine elements into multiple types of objects:
-
-- vectors: a combination of elements into 1 dimension
-- matrices: a combination of vectors into 2 dimensions
-- arrays: a combination of matrices into more than 2 dimensions
-
-Vectors, matrices and arrays can be **either numeric or character**. Objects that can combine numeric and character information are:
-
-- dataframes: a combination of equal length vectors into 2 dimensions
-- lists: a combination of whatever you want
-
-## Vectors
-```{r}
-c(1, 3, 5, 2, 6, 4)
-v <- 1:6
-v
-v[4]
-```
-
-## Matrices
-```{r}
-m <- matrix(1:6, nrow = 3, ncol = 2)
-m
-m[1, ]
-m[, 2]
-```
-
-## Data frames
-```{r}
-d <- data.frame(numbers = 1:3, 
-                letters = c("a", "b", "c"),
-                V3 = c(TRUE, FALSE, TRUE))
-d
-d$numbers
-d$letters
-```
-
-## Lists
-```{r}
-l <- list(vector = v, dframe = d)
-l
-l$vector
-l$dframe$numbers
-```
-
-## Some programming tips:
-- keep your code tidy
-- use comments (text preceded by `#`) to clarify what you are doing
-    - If you look at your code again, one month from now: you will not know what you did --> unless you use comments 
-
-- when working with functions, use the TAB key to quickly access the help for the function's components
-- work with logically named `R`-scripts
-    - indicate the sequential nature of your work
-- work with `RStudio` projects
-- if allowed, place your project folders in some cloud-based environment
-
-## Functions
-
-Functions have parentheses `()`. Names directly followed by parentheses always indicate functions. For example; 
-
- - `matrix()` is a function
- - `c()` is a function
- - but `(1 - 2) * 5` is a calculation, not a function
-
-## Packages
-Packages give additional functionality to `R`. 
-
-By default, some packages are included. These packages allow you to do mainstream statistical analyses and data manipulation. Installing additional packages allow you to perform the state of the art in statistical programming and estimation. 
-
-The cool thing is that these packages are all developed by users. The throughput process is therefore very timely:
-
-  - newly developed functions and software are readily available
-  - this is different from other mainstream software, like SPSS, where new methodology may take years to be implemented. 
-
-A list of available packages can be found on [CRAN](https://cran.r-project.org)
-
-## Functions
-
-Functions have parentheses `()`. Names directly followed by parentheses always indicate functions. For example; 
-
- - `matrix()` is a function
- - `c()` is a function
- - but `(1 - 2) * 5` is a calculation, not a function
-
-## Loading packages
-Packages extend the basic functionality of `R`. 
-
-There are two ways to load a package in `R`
-```{r}
-library(stats)
-``` 
-and
-```{r}
-require(stats)
-```
-
-## Installing packages
-The easiest way to install e.g. package `mice` is to use
-```{r eval=FALSE}
-install.packages("mice")
-```
-
-Alternatively, you can also do it in `RStudio` through 
-
-`Tools --> Install Packages`
-
-
-## In general...
-- Use common sense and BE CONSISTENT.
-
-- Browse through [the tidyverse style guide](https://style.tidyverse.org)
-
-  - The point of having style guidelines is to have a common vocabulary of coding 
-  - so people can concentrate on what you are saying, rather than on how you are saying it. 
-
-- If code you add to a file looks drastically different from the existing code around it, the discontinuity will throw readers and collaborators out of their rhythm when they go to read it. Try to avoid this.
-
-- Intentional spacing makes your code easier to interpret
-
-  - `a<-c(1,2,3,4,5)` vs;
-  - `a <- c(1, 2, 3, 4, 5)`
- 
- - at least put a space after every comma!
 
 ## Packages we use in these slides
 ```{r warning=FALSE, message=FALSE}
-library(MASS)     # for the cats data
-library(dplyr)    # data manipulation
-library(haven)    # in/exporting data
-library(magrittr) # pipes
-library(mice)     # for the boys data
-library(ggplot2)  # visualization
+library(dplyr)      # data manipulation
+library(magrittr)   # pipes
+library(mice)       # for the boys data
+library(ggplot2)    # visualization
+library(DT)         # fancy JS/html tables
+library(reshape2)   # melt stuff
 ```
 
-## Key functions
 
-- `transform()`: changing and adding columns
-- `dplyr::filter()`: row-wise selection (of cases)
-- `table()`: frequency tables
-- `class()`: object class
-- `levels()`: levels of a factor
-- `haven::read_sav()`: import SPSS data
-- `cor()`: bivariate correlation
-- `sample()`: drawing a sample
-- `t.test()`: t-test 
-
-# Data manipulation
-
-## The `MASS::cats` data
+## The data
 ```{r}
-head(cats)
+head(boys)
 ```
 
-```{r}
-str(cats)
+## Goal
+
+At the end of this lecture we aim to understand what happens in 
+
+```{r eval = FALSE}
+ggplot(mutate(na.omit(select(boys, age, hgt, reg)), height_meters = hgt/100), 
+       aes(height_meters, age)) + geom_point(aes(group = reg))
 ```
-
-## How to get only Female cats?
-
-```{r}
-fem.cats <- cats[cats$Sex == "F", ]
-dim(fem.cats)
-head(fem.cats)
-```
-
-## How to get only *heavy* cats?
-```{r}
-heavy.cats <- cats[cats$Bwt > 3, ]
-dim(heavy.cats)
-head(heavy.cats)
-```
-
-## How to get only *heavy* cats?
-```{r}
-heavy.cats <- subset(cats, Bwt > 3)
-dim(heavy.cats)
-head(heavy.cats)
-```
-
-## another way: `dplyr`
-```{r}
-filter(cats, Bwt > 2, Bwt < 2.2, Sex == "F")
-```
-
-## Working with factors
-```{r}
-class(cats$Sex)
-levels(cats$Sex)
-```
-
-## Sorting 
-```{r}
-sort1 <- arrange(cats, Bwt)
-head(sort1)
-sort2 <- arrange(cats, desc(Bwt))
-head(sort2)
-```
-
-# Basic analysis
-
-## Correlation
-
-```{r}
-cor(cats[, -1])
-```
-With `[, -1]` we exclude the first column
-
-## Correlation
-
-```{r}
-cor.test(cats$Bwt, cats$Hwt)
-```
-
-What do we conclude?
-
-## Correlation
-
-```{r fig.height=5, fig.width=5, dev.args = list(bg = 'transparent'), fig.align='center'}
-plot(cats$Bwt, cats$Hwt)
-```
-
-## T-test
-Test the null hypothesis that the difference in mean heart weight between male and female cats is 0
-```{r}
-t.test(formula = Hwt ~ Sex, data = cats)
-```
-
-## T-test
-```{r fig.height=5, fig.width=5, dev.args = list(bg = 'transparent'), fig.align='center'}
-plot(formula = Hwt ~ Sex, data = cats)
-```
-
-# controls and flows | if | for | apply | functions
-
-## Automation
-
-* If-statements
-
-* For-loops
-
-* `Apply()`
-
-* Writing your own functions
-
-# Conditionals and loops
-
-## If-statements
-
-Often, we want to run some code ***only if*** some ***condition*** is true.
-
-For example:
-
-```{r}
-a <- 2
-a > 5
-if (a > 5){
-  print("a is larger than 5.")
-}
-```
-
-
-```{r}
-a <- 8
-if (a > 5){
-  print("a is larger than 5.")
-}
-```
-
-## If-else-statements
-We can also specify something to be run if the *condition* is **not** true.
-
-```{r}
-a <- 2
-if (a > 5){
-  print("a is larger than 5.")
-} else {
-  print("a is smaller than 5.")
-}
-```
-
-## If-else-statements
-
-```{r}
-a <- 8
-if (a > 5){
-  print("a is larger than 5.")
-} else {
-  print("a is smaller than 5.")
-}
-```
-
-## For-loops
-
-For loops are used when we want to perform some repetitive calculations. 
-
-It is often tedious, or even impossible, to write this repetition out completely. 
-
-## For-loops {.small}
-```{r}
-# Let's print the numbers 1 to 6 one by one. 
-print(1)
-print(2)
-print(3)
-print(4)
-print(5)
-print(6)
-```
-
-## For-loops
-
-For-loops allow us to automate this!
-
-```{r}
-for (i in 1:6){
-  print(i)
-}
-```
-
-## For-loops
-
-```{r}
-for (i in 1:6){
-  print(i < 5)
-}
-```
-
-## For-loops
-
-```{r}
-for (i in 1:nrow(cats)){
-  if (cats$Bwt[i] > 2.5){
-    cat(i, "is over 2.5. It is:", cats$Bwt[i], "\n")
-  }
-}
-```
-
-# The `apply()` family
-## `apply()`
-
-The `apply` family is a group of very useful functions that allow you to easily execute a function of your choice over a list of objects, such as a `list`, a `data.frame`, or `matrix`.
-
-We will look at three examples:
-
-- `apply`
-
-- `sapply`
-
-- `lapply`
-
-## `apply()`
-`apply` is used for matrices (and sometimes dataframes). It can take a function that takes a vector as input, and **apply** it to each *row* or *column*. 
-
-
-## `apply()`
-MARGIN is 1 for rows, 2 for columns. 
-
-```{r}
-apply(cats[, -1], MARGIN = 2, mean)
-```
-
-But we've seen this done easier:
-
-```{r}
-colMeans(cats[, -1])
-```
-
-However, the power of `apply()` is that it can use **any** function we throw at it. 
-
-## `apply()` 
-```{r} 
-set.seed(123)
-rand.mat <- matrix(rnorm(21), nrow = 3, ncol = 7)
-rand.mat
-apply(rand.mat, MARGIN = 1, FUN = max)
-apply(rand.mat, MARGIN = 2, FUN = max)
-```
-
-## `apply()` 
-```{r}
-rand.mat
-apply(rand.mat, MARGIN = 1, FUN = sum)
-apply(rand.mat, MARGIN = 2, FUN = var)
-```
-
-## `sapply()` 
-`sapply()` is used on `list`-objects and returns a matrix
-
-```{r}
-my.list <- list(A = c(4, 2, 1:3), B = "Hello.", C = TRUE)
-sapply(my.list, class)
-sapply(my.list, range)
-```
-
-It returns a vector or a matrix, depending on the output of the function.
-
-Why is each element a character string?
-
-## `sapply()`
-
-Any `data.frame` is also a `list`, where each column is one `list`-element.
-```{r}
-class(cats)
-is.list(cats)
-```
-
-This means we can use `sapply` on data frames as well, which is often useful.
-
-```{r}
-sapply(cats, class)
-```
-
-## `lapply()`
-
-`lapply()` is *exactly* the same as `sapply()`, but it returns a list instead of a vector.
-```{r}
-lapply(cats, class)
-```
-
-# Writing your own functions
-
-## What are functions?
-
-Functions are reusable pieces of code that take an input, do some computation on the input, and return output. 
-
-We have been using a lot of functions: code of the form `something()` is usually a function. 
-
-```{r}
-mean(1:6)
-```
-
-## Our own function
-The apply class of functions is very flexible and lightning fast, when compared to manual operations that could easily be defined in terms of functions. 
-
-The only caveat is that you need a function to apply. Many such functions are already available in `R`, such as `mean()`, `mode()`, `sum()`, `cor()`, and so on.
-
-However, if you need to perform more than a simple calculation, it is often necessary to create your own function. In `R` functions take the following form
-
-```{r}
-myfunction <- function(arguments){
-  hereyourfunctioncode
-}
-```
-
-## A function example
-```{r}
-mean.sd <- function(argument1, argument2){
-  mean1 <- mean(argument1) 
-  mean2 <- mean(argument2)
-  sd1 <- sd(argument1)
-  sd2 <- sd(argument2)
-  result <- data.frame(mean = c(mean1, mean2),
-                       sd = c(sd1, sd2), 
-                       row.names = c("first", "second"))
-  return(result)
-}
-```
-
-The above function calculates the means and standard deviations for two sources of input, then combines these statistics in a simple data frame and returns the data frame. 
-
-The sources of input are defined in the function arguments `argument1` and `argument2`. 
-
-## What happens in a function...
-The reason why we have to specify function arguments is simple:
-
-$$\text{EVERYTHING THAT HAPPENS IN A FUNCTION COMES FROM THE}$$
-$$\text{FUNCTION AND STAYS IN THE FUNCTION!}$$
-
-This is because a function opens a seperate environment that only exists for as long as the function operates. This means:
-
-To get information from the global environment to the function’s environment, we need arguments.
-To properly return information to the global environment, we should use `return()`. In general, using `return()` makes it explicit what your function’s return is. For complicated functions this is proper coding procedure, but for simple functions it is not strictly necessary.
-
-## Our example function
-To put this example function to the test:
-
-```{r}
-mean.sd(argument1 = 1:10,
-        argument2 = 3:8)
-```
-
-or, simply:
-
-```{r}
-mean.sd(1:10, 3:8)
-```
-
 
 # Pipes
 
 ## This is a pipe:
 
 ```{r message=FALSE, eval = FALSE}
-boys <- 
-  read_sav("boys.sav") %>%
-  head()
+boys %>% 
+  select(is.numeric) %>% 
+  cor(use = "pairwise.complete.obs") %>% 
+  round(3)
 ```
 
 It effectively replaces `head(read_sav("boys.sav"))`.
@@ -541,27 +68,7 @@ It effectively replaces `head(read_sav("boys.sav"))`.
 <img src="pipe.jpg" style="display:block;width:500px;margin-left:auto;margin-right:auto"></img>
 
 ## Why are pipes useful?
-Let's assume that we want to load data, change a variable, filter cases and select columns. Without a pipe, this would look like
-```{r}
-boys  <- read_sav("boys.sav")
-boys2 <- transform(boys, hgt = hgt / 100)
-boys3 <- filter(boys2, age > 15)
-boys4 <- subset(boys3, select = c(hgt, wgt, bmi))
-```
-
-With the pipe:
-```{r}
-boys <-
-  read_sav("boys.sav") %>%
-  transform(hgt = hgt/100) %>%
-  filter(age > 15) %>%
-  subset(select = c(hgt, wgt, bmi))
-```
-
 Benefit: a single object in memory that is easy to interpret
-
-
-## With pipes
 Your code becomes more readable:
 
 - data operations are structured from left-to-right and not from in-to-out
@@ -573,15 +80,15 @@ Your code becomes more readable:
 
 - `f(x)` becomes `x %>% f()`
 ```{r}
-rnorm(10) %>% mean()
+boys$age %>% mean()
 ```
 - `f(x, y)` becomes `x %>% f(y)` 
 ```{r}
-boys %>% cor(use = "pairwise.complete.obs")
+boys %>% head(n = 1)
 ```
 - `h(g(f(x)))` becomes `x %>% f %>% g %>% h` 
-```{r}
-boys %>% subset(select = wgt) %>% na.omit() %>% max()
+```{r warning=FALSE}
+boys %>% select(is.numeric) %>% na.omit() %>% colMeans
 ```
 
 # More pipe stuff
@@ -599,31 +106,112 @@ boys %>% subset(select = wgt) %>% na.omit() %>% max()
 ## The role of `.` in a pipe
 In `a %>% b(arg1, arg2, arg3)`, `a` will become `arg1`. With `.` we can change this.
 ```{r error=TRUE}
-cats %>%
-  plot(Hwt ~ Bwt, data = .)
+boys %>%
+  plot(bmi ~ age, data = .)
 ```
 VS
 ```{r}
-cats %$%
-  plot(Hwt ~ Bwt)
+boys %$%
+  plot(bmi ~ age)
 ```
 The `.` can be used as a placeholder in the pipe. 
 
+# Data manipulation
+
 ## Performing a t-test in a pipe
 ```{r message=FALSE}
-cats %$%
-  t.test(Hwt ~ Sex)
+boys %>%
+  mutate(ovwgt = bmi > 25) %$% 
+  t.test(age ~ ovwgt)
 ```
 is the same as 
 ```{r eval=FALSE}
-t.test(Hwt ~ Sex, data = cats)
+t.test(age ~ (bmi > 25), data = boys)
 ```
+
+## Melting
+```{r}
+boys %>% 
+  select(reg, age) %>% 
+  melt(id.vars = "reg", variable.name = "variable", value.name = "value") %>%
+  datatable(options = list(pageLength = 25, scrollY = "250px"))
+```
+
+## Calculate statistics
+```{r}
+boys %>% 
+  select(reg, age) %>% 
+  melt(id.vars = "reg", variable.name = "variable", value.name = "value") %>%
+  group_by(variable, reg) %>% 
+  summarise_all(list(mean = mean, sd = sd), na.rm = TRUE) %>% 
+  datatable(options = list(pageLength = 25, scrollY = "200px"))
+```
+
+## Multiple columns
+```{r}
+boys %>% 
+  select(reg, where(is.numeric)) %>% 
+  melt(id.vars = "reg", variable.name = "variable", value.name = "value") %>%
+  group_by(variable, reg) %>% 
+  summarise_all(list(mean = mean, sd = sd), na.rm = TRUE) %>% 
+  datatable(options = list(pageLength = 25, scrollY = "200px"))
+```
+
+## Mutate: add
+```{r}
+boys %>% 
+  mutate(bmi_calc = wgt / (hgt/100)^2) %>% 
+  select(bmi, bmi_calc) %>% 
+  head()
+```
+
+## Mutate: remove
+```{r}
+boys %>% 
+  mutate(reg = NULL,
+         gen = NULL, 
+         phb = NULL) %>% 
+  head()
+```
+## Mutate: change
+```{r}
+boys %>% 
+  mutate(hgt = hgt/100) %>% 
+  head()
+```
+## Mutate: transform column
+```{r}
+boys %$% table(reg)
+
+boys %>% 
+  select(hgt, reg) %>%
+  mutate(across(!hgt, as.numeric)) %$% 
+  table(reg)
+```
+
+## rowwise
+```{r}
+boys %>% 
+  na.omit %>% 
+  rowwise() %>% 
+  mutate(tanner = mean(c(gen, phb))) %>% 
+  select(gen, phb, tanner) %>% 
+  head()
+```
+
 
 # Data visualization with `ggplot2`
 
 ## The `anscombe` data
 ```{r}
 anscombe
+```
+
+## The same statistical properties
+```{r}
+anscombe %>% colMeans()
+anscombe %>% cor() %>% round(digits = 3) %>% .[1:4, 5:8]
+anscombe %>% var() %>% round(digits = 3) %>% .[1:4, 5:8]
 ```
 
 ##  Fitting a line {.smaller}
@@ -736,3 +324,21 @@ plot(gg)
 
 ## Why this syntax?
 <img src="ggani.gif" style="display:block;width:90%;margin:0 auto;"></img>
+
+## Revisit the start
+```{r eval = FALSE}
+ggplot(mutate(na.omit(select(boys, age, hgt, reg)), height_meters = hgt/100), 
+       aes(height_meters, age)) + geom_point(aes(group = reg))
+```
+
+Is the same as
+```{r eval = FALSE}
+boys %>% 
+  select(age, hgt, reg) %>% 
+  na.omit() %>% 
+  mutate(height_meters = hgt/100) %>% 
+  ggplot(aes(x = height_meters, y = age)) + 
+  geom_point(aes(group = reg))
+```
+
+

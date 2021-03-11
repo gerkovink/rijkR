@@ -59,59 +59,11 @@ library(mice)      # for the boys data
 
 ---
 
-## `for`-loops
-
----
-
-1. **Create a `for`-loop that loops over all numbers between 0 and 10, but only prints numbers below 5. **
-
----
-
-2. **Modify the for loop to only print the numbers 3, 4, and 5.**
-
----
-
-3. **Recreate the following matrix, where 1 to eight are multiplied by 1 on the first row, 2 on the second, etc. Tip: use `byrow = TRUE` to fill a matrix left-to-right instead of top-to-bottom.**
-
----
-
-The `anscombe` data set is a wonderful data set from 1973 by Francis J. Anscombe aimed to demonstrate that pairs of variables can have the same statistical properties, while having completely differnt graphical representations. We will be using this data set more this week. If you'd like to know more about `anscombe`, you can simply call `?anscombe` to enter the help.
-
-You can directly call `anscombe` from your console because the `datasets` package is a base package in `R`. This means that it is always included and loaded when you start an `R` instance. In general, when you would like to access functions or data sets from packages that are not automatically loaded, we don't have to explicitly load the package. We can also call `package::thing-we-need` to directly 'grab' the `thing-we-need` from the `package` namespace. For example,  
-```{r}
-test <- datasets::anscombe
-identical(test, anscombe) #test if identical
-```
-
-This is especially handy within functions, as we can call `package::function-name` to borrow functionality from installed packages, without loading the whole package. Calling only those functions that you need is more memory-efficient than loading it all. More memory efficient means faster computation. 
-
----
-
-4. **Display summary statistics (for example, using `summary`) for each column of the `anscombe` dataset from the `datasets` package**
-
----
-
-## `apply()`
-
----
-
-5. **Display summary statistics for each column of the `anscombe` dataset using `apply()`.**
-
----
-
-6. **Display summary statistics for each column of the `anscombe` dataset using `sapply()`. **
-
----
-
-7. **Display summary statistics for each column of the `anscombe` dataset using `lapply()`. **
-
----
-
 ## Pipes
 
 --- 
 
-8. **Use a pipe to do the following:**
+1. **Use a pipe to do the following:**
 
 - draw 1000 values from a normal distribution with `mean = 5` and `sd = 1` - $N(5, 1)$, 
 - create a matrix where the first 500 values are the first column and the second 500 values are the second column **
@@ -119,11 +71,11 @@ This is especially handy within functions, as we can call `package::function-nam
 
 ---
 
-9. **Use a pipe to calculate the correlation matrix on the `anscombe` data set**
+2. **Use a pipe to calculate the correlation matrix on the `anscombe` data set**
 
 ---
 
-10. **Now use a pipe to calculate the correlation for the pair (`x4`, `y4`) on the `anscombe` data set**
+3. **Now use a pipe to calculate the correlation for the pair (`x4`, `y4`) on the `anscombe` data set**
 
 ---
 
@@ -137,20 +89,20 @@ help(boys)
 
 ---
 
-11. **It seems that the `boys` data are sorted based on `age`. Verify this.** 
+4. **It seems that the `boys` data are sorted based on `age`. Verify this.** 
 
 
 ---
 
-12. **Use a pipe to calculate the correlation between `hgt` and `wgt` in the `boys` data set from package `mice`.**
+5. **Use a pipe to calculate the correlation between `hgt` and `wgt` in the `boys` data set from package `mice`.**
 
 ---
 
-13. **In the `boys` data set, `hgt` is recorded in centimeters. Use a pipe to transform `hgt` in the `boys` dataset to height in meters and verify the transformation**
+6. **In the `boys` data set, `hgt` is recorded in centimeters. Use a pipe to transform `hgt` in the `boys` dataset to height in meters and verify the transformation**
 
 ---
 
-14. **Use a pipe to plot the pair (`hgt`, `wgt`) two times: once for `hgt` in meters and once for `hgt` in centimeters. Make the points in the 'centimeter' plot `red` and in the 'meter' plot `blue`. **
+7. **Use a pipe to plot the pair (`hgt`, `wgt`) two times: once for `hgt` in meters and once for `hgt` in centimeters. Make the points in the 'centimeter' plot `red` and in the 'meter' plot `blue`. **
 
 ---
 
@@ -158,35 +110,35 @@ help(boys)
 
 ---
 
-15. **Function `plot()` is the core plotting function in `R`. Find out more about `plot()`: Try both the help in the help-pane and `?plot` in the console. Look at the examples by running `example(plot)`.**
+8. **Function `plot()` is the core plotting function in `R`. Find out more about `plot()`: Try both the help in the help-pane and `?plot` in the console. Look at the examples by running `example(plot)`.**
 
 ---
 
-16. **Create a scatterplot between `age` and `bmi` in the `mice::boys` data set**
+9. **Create a scatterplot between `age` and `bmi` in the `mice::boys` data set**
 
 ---
 
-17. **Now recreate the plot with the following specifications:**
+10. **Now recreate the plot with the following specifications:**
 
 ---
 
-18. **Create a histogram for `age` in the `boys` data set**
+11. **Create a histogram for `age` in the `boys` data set**
 
 ---
 
-19. **Create a bar chart for `reg` in the boys data set**
+12. **Create a bar chart for `reg` in the boys data set**
 
 ---
 
-20. **Create a box plot for `hgt` with different boxes for `reg` in the `boys` data set**
+13. **Create a box plot for `hgt` with different boxes for `reg` in the `boys` data set**
 
 ---
 
-21. **Create a density plot for `age` with different curves for boys from the `city` and boys from rural areas (`!city`).**
+14. **Create a density plot for `age` with different curves for boys from the `city` and boys from rural areas (`!city`).**
 
 ---
 
-22. **Create a diverging bar chart for `hgt` in the `boys` data set, that displays for every `age` year that year's mean height in deviations from the overall average `hgt`**
+15. **Create a diverging bar chart for `hgt` in the `boys` data set, that displays for every `age` year that year's mean height in deviations from the overall average `hgt`**
 
 In  other words; recreate the following plot:
 

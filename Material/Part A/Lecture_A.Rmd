@@ -1,7 +1,7 @@
 ---
-title: "Functions, Pipes and Visualization"
+title: "Data manipulation, Pipes and Visualization"
 author: "Gerko Vink"
-date: "Fundamental Techniques in Data Science with R"
+date: "Fundamental Techniques with R"
 output:
   ioslides_presentation:
     logo: logo.png
@@ -63,9 +63,9 @@ boys %>%
   round(3)
 ```
 
-It effectively replaces `head(read_sav("boys.sav"))`.
+It effectively replaces `round(cor(select(boys, is.numeric), use = "pairwise.complete.obs"), digits = 3)`.
 
-<img src="pipe.jpg" style="display:block;width:500px;margin-left:auto;margin-right:auto"></img>
+<img src="pipe.jpg" style="display:block;width:400px;margin-left:auto;margin-right:auto"></img>
 
 ## Why are pipes useful?
 Benefit: a single object in memory that is easy to interpret
@@ -105,12 +105,12 @@ boys %>% select(is.numeric) %>% na.omit() %>% colMeans
 
 ## The role of `.` in a pipe
 In `a %>% b(arg1, arg2, arg3)`, `a` will become `arg1`. With `.` we can change this.
-```{r error=TRUE}
+```{r eval = FALSE}
 boys %>%
   plot(bmi ~ age, data = .)
 ```
 VS
-```{r}
+```{r eval = FALSE}
 boys %$%
   plot(bmi ~ age)
 ```
@@ -177,7 +177,7 @@ boys %>%
 ```{r}
 boys %>% 
   mutate(hgt = hgt/100) %>% 
-  head()
+  tail()
 ```
 ## Mutate: transform column
 ```{r}
@@ -215,16 +215,7 @@ anscombe %>% var() %>% round(digits = 3) %>% .[1:4, 5:8]
 ```
 
 ##  Fitting a line {.smaller}
-```{r eval = FALSE, message = FALSE}
-anscombe %>%
-  ggplot(aes(y1, x1)) + 
-  geom_point() + 
-  geom_smooth(method = "lm")
-```
-
-##  Fitting a line {.smaller}
-
-```{r echo=FALSE, message = FALSE}
+```{r message = FALSE, fig.height=3.5}
 anscombe %>%
   ggplot(aes(y1, x1)) + 
   geom_point() + 

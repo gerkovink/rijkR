@@ -182,7 +182,7 @@ I usually adapt the course as we go. To ensure that you work with the latest ite
 ### What to do after the course
 
 - [R for Data Science](https://r4ds.had.co.nz): a wonderful book that details a usefull toolset for current and aspiring data scientists. 
-- [Introduction to Statistical Learning](http://faculty.marshall.usc.edu/gareth-james/ISL/): an introductory book on statistical learning, with applications in R.
+- [Introduction to Statistical Learning](https://www.statlearning.com/): an introductory book on statistical learning, with applications in R.
 - [Data Analysis and Graphics Using R](http://www.pindex.com/uploads/post_docs/Maindonald%20Data%20Analysis%20and%20Graphics(PINDEX-DOC-6953).pdf): a detailed book that covers a lot about categorical data analysis and fitting `glm`s in `R`.
 
 The above references are (currently) available for free in these links. I deem them very useful and I would highly recommend them. 

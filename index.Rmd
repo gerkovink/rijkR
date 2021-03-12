@@ -66,7 +66,7 @@ Participants are requested to bring their own laptop for lab meetings.
 ### Preparing your machine for the course
 Dear all, 
 
-This January you will participate in the **Statistical programming with R** workshop. To realize a steeper learning curve, we will use some functionality that is not part of the base installation for `R`. The below steps guide you through installing both `R` as well as the necessary additions. 
+This March you will participate in the **Statistical programming with R** workshop. To realize a steeper learning curve, we will use some functionality that is not part of the base installation for `R`. The below steps guide you through installing both `R` as well as the necessary additions. 
 I look forward to see you all,  
 
 *Gerko Vink*
@@ -137,13 +137,13 @@ All the best,
 ### The course materials
 I usually adapt the course as we go. To ensure that you work with the latest iteration of the course materials, I advice all course participants to access the materials online.
 
-- Part A: Flow constructs, Pipes and Data Visualization
+- Part A: Data manipulation, Pipes and Data Visualization
     - [Lecture A](Material/Part A/Lecture_A.html)
     - [Practical A](Material/Part A/Practical_A_walkthrough.html)
     - [Impractical A](Material/Part A/Practical_A.html)
     - The [boys.sav](Material/Part A/boys.sav) set used in the slides
 
-- Part B: linear modeling, prediction and crossvalidation
+- Part B: Linear modeling, Prediction and Crossvalidation
     - [Lecture B](Material/Part B/Lecture_B.html)
     - [Practical B](Material/Part B/Practical_B_walkthrough.html)
     - [Impractical B](Material/Part B/Practical_B.html)

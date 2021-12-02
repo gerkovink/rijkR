@@ -21,6 +21,7 @@ output:
 
 - cross validation
 
+
 ##  We use the following packages
 ```{r message=FALSE}
 library(MASS)
@@ -29,7 +30,7 @@ library(magrittr)
 library(ggplot2)
 library(mice)
 library(DAAG)
-library(car)
+library(caret)
 ```
 
 # The linear model
@@ -51,7 +52,7 @@ where
 
 
 ## Univariate expectation
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 library(ggplot2)
 set.seed(123)
 plotdata <- data.frame(X = rnorm(100, 167.5, 10),
@@ -67,7 +68,7 @@ plotdata %>%
 ```
 
 ## Conditional expectation
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 fit <- plotdata %$%
   lm(Y~X)
 
@@ -105,29 +106,6 @@ In short, we assume
   - across any of the predictors
 - The residuals are **normally distributed** with mean $\mu_\epsilon = 0$
 
-## A simple example
-$$y = \alpha + \beta X + \epsilon$$ and $$\hat{y} = \alpha + \beta X$$
-As a result, the following components in  linear modeling
-
-- outcome $y$
-- predicted outcome $\hat{y}$
-- predictor $X$
-- residual $\epsilon$
-
-can also be seen as columns in a data set. 
-
-## As a data set
-As a data set, this would be the result for `lm(y1 ~ x1, data = anscombe)`
-```{r echo=FALSE}
-library(DT)
-fit <- anscombe %$%
-  lm(y1 ~ x1)
-data.frame(y1 = anscombe$y1, 
-           x1 = anscombe$x1,
-           y1.hat = fit$fitted.values,
-           residuals = fit$residuals) %>% datatable
-```
-
 ## A simple model
 ```{r cache = TRUE}
 fit <- anscombe %$%
@@ -139,13 +117,13 @@ fit2 <- anscombe %$%
 ```
 
 ## Visualizing the assumptions
-```{r}
+```{r echo=FALSE}
 par(mfrow = c(2, 2))
 plot(fit)
 ```
 
 ## Visualizing the assumptions
-```{r}
+```{r echo=FALSE}
 par(mfrow = c(2, 2))
 plot(fit2)
 ```
@@ -279,45 +257,10 @@ anova(boys.fit, boys.fit2, boys.fit3, boys.fit5)
 ```
 The `boys.fit5` model is better than the previous model - it has fewer parameters
 
-## Stepwise regression
-We start with the full model, which contains all parameters for all columns. 
-
-The most straightforward way to go about this is by specifying the following model:
-```{r}
-full.model <- lm(age ~ ., data = na.omit(boys))
-full.model
-```
-
-## Stepwise regression - continued
-We can then start with specifying the stepwise model. In this case we choose direction `both`. 
-```{r}
-step.model <- step(full.model, direction = "both", 
-                      trace = FALSE)
-step.model
-```
-
-Other options are 
-
-- `forward`: fit all univariate models, add the best predictor and continue.
-- `backward`: fit the full model, eliminate the worst predictor and continue. 
-
-## Summary
-```{r}
-step.model %>% summary
-```
-
-## Stepwise regression - AIC
-```{r}
-full.model <- lm(age ~ ., data = na.omit(boys))
-step.model <- MASS::stepAIC(full.model, direction = "both", 
-                      trace = FALSE)
-step.model
-```
-
 ## Influence of cases
 DfBeta calculates the change in coefficients depicted as deviation in SE's.
 ```{r cache = TRUE}
-step.model %>%
+boys.fit5 %>%
   dfbeta() %>%
   head(n = 7)
 ```
@@ -361,6 +304,16 @@ A prediction interval reflects the uncertainty around a single value. The confid
 reflects the uncertainty around the mean prediction values. 
 
 # Assessing predictive accuracy
+
+## Model performance
+```{r}
+fit %>% 
+  predict() %>% 
+  caret::postResample(anscombe$y1)
+```
+These performance measures only give us estimates about the training error. 
+<br><br>
+Always use at least crossvalidation to evaluate predictive performance. 
 
 ## K-fold cross-validation
 
@@ -412,12 +365,12 @@ DAAG::CVlm(anscombe, fit, plotit="Residual", printit=F)
 par(mar=c(5,4,4,2)+.1,cex=.8,cex.lab=1.5,cex.axis=1.2,cex.main=1.5)
 ```
 ```{r echo=T, fig.height=3.5, dev.args = list(bg = 'transparent'), warning=FALSE}
-DAAG::CVlm(na.omit(boys), step.model, plotit="Observed", printit=F)
+DAAG::CVlm(na.omit(boys), boys.fit5, plotit="Observed", printit=F)
 ```
 
 ## Plotting the residuals
 ```{r echo=T, fig.height=3.5, dev.args = list(bg = 'transparent'), warning=FALSE}
-DAAG::CVlm(na.omit(boys), step.model, plotit="Residual", printit=F)
+DAAG::CVlm(na.omit(boys), boys.fit5, plotit="Residual", printit=F)
 ```
 
 ## How many cases are used?
@@ -434,10 +387,85 @@ boys %$%
   nobs()
 ```
 
+# Confidence intervals?
+
+## 95\% confidence interval {.smaller}
+*If an infinite number of samples were drawn and CI's computed, then the true population mean $\mu$ would be in* ***at least*** *95\% of these intervals*
+
+\[
+95\%~CI=\bar{x}\pm{t}_{(1-\alpha/2)}\cdot SEM
+\]
+
+Example
+```{r}
+x.bar <- 7.6 # sample mean
+SEM   <- 2.1 # standard error of the mean
+n     <- 11 # sample size
+df    <- n-1 # degrees of freedom
+alpha <- .15 # significance level
+t.crit <- qt(1 - alpha / 2, df) # t(1 - alpha / 2) for df = 10
+c(x.bar - t.crit * SEM, x.bar + t.crit * SEM) 
+```
+
+## {.smaller}
+<center>
+<img src="Neyman1934.png" alt="HTML5 Icon" width = 75%>
+</center>
+
+        Neyman, J. (1934). On the Two Different Aspects of the Representative Method: 
+        The Method of Stratified Sampling and the Method of Purposive Selection. 
+        Journal of the Royal Statistical Society, Vol. 97, No. 4 (1934), pp. 558-625
+
+## Misconceptions {.smaller}
+Confidence intervals are frequently misunderstood, even well-established researchers sometimes misinterpret them. .
+
+1. A realised 95% CI does not mean:
+
+- that there is a 95% probability the population parameter lies within the interval
+- that there is a 95% probability that the interval covers the population parameter
+
+    Once an experiment is done and an interval is calculated, the interval either covers, or does       not cover the parameter value. Probability is no longer involved. 
+
+    The 95% probability only has to do with the estimation procedure. 
+
+2. A 95% confidence interval does not mean that 95% of the sample data lie within the interval.
+3. A confidence interval is not a range of plausible values for the sample mean, though it may be understood as an estimate of plausible values for the population parameter.
+4. A particular confidence interval of 95% calculated from an experiment does not mean that there is a 95% probability of a sample mean from a repeat of the experiment falling within this interval.
+
+## Confidence intervals
+```{r fig.height = 4, echo=FALSE, message=FALSE, message=FALSE, warning = FALSE}
+set.seed(1234)
+library(plyr)
+samples <- rlply(100, rnorm(5000, mean = 0, sd = 1))
+info <- function(x){ 
+  M <- mean(x)
+  DF <- length(x) - 1
+  SE <- 1 / sqrt(length(x))
+  INT <- qt(.975, DF) * SE
+  return(c(M, M - 0, SE, M - INT, M + INT))
+}
+format <- c("Mean" = 0, "Bias" = 0, "Std.Err" = 0, "Lower" = 0, "Upper" = 0)
+require("magrittr")
+results <- samples %>%
+  vapply(., info, format) %>%
+  t()
+results <- results %>%
+  as.data.frame() %>%
+  mutate(Covered = Lower < 0 & 0 < Upper)
+require(ggplot2)
+limits <- aes(ymax = results$Upper, ymin = results$Lower)
+ggplot(results, aes(y=Mean, x=1:100, colour = Covered)) + 
+  geom_hline(aes(yintercept = 0), color = "dark grey", size = 2) + 
+  geom_pointrange(limits) + 
+  xlab("Simulations 1-100") +
+  ylab("Means and 95% Confidence Intervals")
+```
+
+100 simulated samples from a population with $\mu = 0$ and $\sigma^2=1$. Out of 100 samples, only 5 samples have confidence intervals that do not cover the population mean.
+
 ## For fun
 <center> 
-<img src="going_out_for_a_byte.png" alt="HTML5 Icon" width = 50%>
+![](img/going_out_for_a_byte.png){width=40%}
+<br>[source](https://www.reddit.com/r/ProgrammerHumor/comments/8za9b6/hello_i_am_your_server_for_today/)
 </center>
-[source](https://www.reddit.com/r/ProgrammerHumor/comments/8za9b6/hello_i_am_your_server_for_today/)
-
 

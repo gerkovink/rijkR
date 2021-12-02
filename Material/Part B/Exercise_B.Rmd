@@ -1,7 +1,7 @@
 ---
-title: "Practical B"
+title: "Exercise C"
 author: "Gerko Vink"
-date: "Statistical Programming with R"
+date: "Rijkstrainees - Statistical Programming in R"
 output: 
    html_document:
     toc: true
@@ -43,8 +43,6 @@ pre { /* Code block - determines code spacing between lines */
 
 In this practical I detail multiple skills and show you a workflow for (predictive) analytics. 
 
-Feel free to ask me, if you have questions. 
-
 All the best, 
 
 Gerko
@@ -64,6 +62,10 @@ library(ggplot2)
 library(DAAG)
 library(MASS)
 ```
+
+---
+
+## Exercise 1
 
 ---
 
@@ -88,6 +90,10 @@ elastic %>%
 ```
 
 The results seem very consistent: Data set `elastic2` has more observations over a larger range, but both sets result in roughly the same regression line. Data set `elastic1` seems to have an *odd-one-out* value.
+
+---
+
+## Exercise 2
 
 ---
 
@@ -134,6 +140,10 @@ This is due to the larger range of values in `elastic2`, and the absence of an o
 
 ---
 
+## Exercise 3
+
+---
+
 3. **Study the *residual vs leverage* plots for both models. Hint use `plot()` on the fitted object**
 
 ```{r}
@@ -151,6 +161,10 @@ As we can see, case 7 has the largest residual.
 ---
 
 Because there is a single value that influences the estimation and is somewhat different than the other values, a robust form of regression may be advisable to obtain more stable estimates. When robust methods are used, we refrain from omitting a suspected outlier from our analysis. In general, with robust analysis, influential cases that are not conform the other cases receive less weight in the estimation procedure then under non-robust analysis.
+
+---
+
+## Exercise 4
 
 ---
 
@@ -223,11 +237,19 @@ in the ordinary `lm()` regression.
 
 ---
 
+## Exercise 5
+
+---
+
 5. **Use the `elastic2` variable `stretch` to obtain predictions on the model fitted on `elastic1`.**
 
 ```{r}
 pred <- predict.lm(fit1, newdata = data.frame(stretch = elastic2$stretch))
 ```
+
+---
+
+## Exercise 6
 
 ---
 
@@ -268,6 +290,10 @@ The mammalsleep dataset is part of `mice`. It contains the Allison and Cicchetti
 
 --- 
 
+## Exercise 7
+
+---
+
 7. **Fit and inspect a model where `brw` is modeled from `bw`**
 ```{r}
 mammalsleep %$%
@@ -280,6 +306,10 @@ mammalsleep %$%
   lm(brw ~ bw) %>%
   summary()
 ```
+
+---
+
+## Exercise 8
 
 ---
 
@@ -299,6 +329,10 @@ mammalsleep %$%
 ```
 
 The analysis we ran is in fact equivalent to running a fixed effects model on clusters of size 1. Since in that scenario there is no clustering, we should omit the fixed effect for `species` and just model the random variation (in this case done by the residual variance).
+
+---
+
+## Exercise 9
 
 ---
 
@@ -348,6 +382,10 @@ and we have obtained a very high $R^2$. If prediction was our goal, we are doing
 
 ---
 
+## Exercise 10
+
+---
+
 10. **Inspect the diagnostic plots for the model obtained in `exercise 16`. What issues can you detect?**
 ```{r}
 fit %>%
@@ -394,128 +432,6 @@ head(influence(fit)$coefficients)
 fit %>%
   dfbeta() %>%
   head()
-```
-
----
-
-
-# Additional Exercises 
-
----
-
-For those who have already finished the exercises, I have prepared some more complicated modeling exercises. These exercises use the `chisq.test()` and `fisher.test()` functions to test contingency tables. We can also use these techniques in modeling efforts. See the below exercises. 
-
----
-
-A recruiter for a large company suspects that the process his company uses to hire new applicants is biased. To test this, he records the application numbers that have been successfully hired in the last hiring round. He finds the following pattern:
-```{r}
-numbers <- data.frame(hired = c(11, 19, 13, 4, 8, 4),
-                      not_hired = c(89, 81, 87, 96, 92, 11))
-numbers$probability <- round(with(numbers, hired / (hired + not_hired)), 2)
-rownames(numbers) <- c(paste("Application number starts with", 0:5))
-numbers
-```
-
----
-
-11. **Investigate whether there is indeed a pattern: does the probability to be hired depend a posteriori on the job application number?**
-
-```{r}
-chisq <- chisq.test(numbers[, 1:2])
-chisq$expected
-```
-
-Expected cell frequencies are very low for starting number `5` Let's run a Fisher exact test:
-```{r}
-fisher.test(numbers[, 1:2])
-```
-
-There seems to be a pattern: lower starting values for the application number have a higher probability of being hired. It seems that the difference in probability to be hired is very unlikely to occur given the assumption of independence. 
-
----
-
-12. **The researcher knows that application numbers are assigned to new applications based on the time and date the application has been submitted. A colleague suggests that applicants who submit early on in the process tend to be better prepared than applicants who submit later on in the process. Test this assumption by running a $X^2$ test to compare the original data to the following pattern where a 2-percent drop over the starting numbers is expected.**
-
-```{r}
-decreasing <- data.frame(hired = c(16, 14, 12, 10, 8, 1),
-                         not_hired = c(84, 86, 88, 91, 93, 14))
-decreasing$probability <- round(with(decreasing, hired / (hired + not_hired)), 2)
-decreasing
-```
-
-To run this data, we can compute the chi-squared test by hand:
-```{r}
-chisq.decreasing <- sum((numbers[, 1:2] - decreasing[, 1:2])^2 / (decreasing[, 1:2]))
-chisq.decreasing
-```
-The chi-squared value for this test is `r chisq.decreasing`. The corresponding p-value is 
-```{r}
-1 - pchisq(chisq.decreasing, df = 5)
-```
-Not succesful: the decreasing probability model does not fit to the data the researcher has observed. 
-
----
-
-The board of the company would like to improve their process if the process is systematically biased. They tell the recruiter that their standard process in hiring people is as follows: 
-
-1. The secretary sorts the applications by application number
-2. The board determines for every application if the applicant would be hired
-3. If half the vacancies are filled they take a coffee break
-4. After the coffee break they continue the same process to distribute the other applications over the remaining vacancies. 
-
-The recruiter suspects that the following psychological process is occuring: The board realized at the coffee break that they were running out of vacancies to award the remaining half of the applications, then became more conservative for a while and return to baseline in the end. 
-
-If that were true, the following expected cell frequencies might be observed:
-```{r}
-oops <- data.frame(hired = c(14, 14, 14, 2, 12, 3),
-                   not_hired = c(86, 86, 86, 98, 88, 12))
-oops$probability <- round(with(oops, hired / (hired + not_hired)), 2)
-oops
-```
-
----
-
-13. **Verify if the `oops` pattern would fit to the observed pattern from the `numbers` data. Again, use a chi-squared test.**
-
-To run this data, we can compute the chi-squared test by hand:
-```{r}
-chisq.oops <- sum((numbers[, 1:2] - oops[, 1:2])^2 / (oops [, 1:2]))
-chisq.oops
-```
-
-The chi-squared value for this test is `r chisq.oops`. The corresponding p-value is 
-```{r}
-1 - pchisq(chisq.oops, df = 5)
-```
-This model seems to fit to the observations. 
-
----
-
-14. **Plot the probability against the starting numbers and use different colours for each of the following patterns:** 
-
-- the observed pattern
-- the independence pattern (equal probability)
-- the `decreasing` probability pattern
-- the `oops` pattern.
-
-```{r warning=FALSE, message=FALSE}
-plotdata <- data.frame(count = c(numbers$hired,
-                                 chisq$expected[, 1], 
-                                 decreasing$hired,
-                                 oops$hired),
-                       total = rep(c(rep(100, 5), 15), 4),
-                       start.nr = rep(0:5, 4),
-                       model = rep(c("observed", 
-                                     "independence",
-                                     "decreasing", 
-                                     "oops"),
-                                   rep(6, 4)))
-plotdata
-plotdata %>%
-  mutate(proportion = count / total) %>%
-  ggplot(aes(start.nr, proportion, colour = model)) + 
-  geom_point() + 
-  geom_smooth()
 ```
 
 ---

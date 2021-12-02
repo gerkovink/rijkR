@@ -1,7 +1,7 @@
 ---
-title: "Supervised and Unsupervised Learning"
+title: "KNN and K-means clustering"
 author: "Gerko Vink and Erik-Jan van Kesteren"
-date: "Statistical Programming with R"
+date: "Rijkstrainees - Statistical Programming in R"
 output:
   ioslides_presentation:
     logo: logo.png
@@ -30,45 +30,6 @@ helpIAmColourblind <- scale_color_manual(values = c("orange",
 theme_update(plot.background = element_rect(fill = "transparent", colour = NA))
 knitr::opts_chunk$set(dev.args=list(bg="transparent"), dev = "svg")
 ```
-
-# What is statistical learning?
-
-## Statistics is everywhere
-
-Several questions involving statistics:
-
-1. What is the relation between $X$ and $Y$? (estimation)
-2. What is the uncertainty around this effect? (estimation/inference)
-3. What can I conclude about my population? (inference/hypothesis testing)
-
-4. How can I best predict new observations? (prediction)
-5. How can I show relevant patterns in my data? (dimension reduction / pattern recognition)
-
-## Examples
-- Radiologists use statistics to sharpen their images (e.g. MRI) and improve their diagnosis.
-- Doctors use statistics to target your treatment to your symptoms or body.
-- Physicists use statistics to find useful patterns in the huge data dumps by the Large Hadron Collider.
-- Insurance companies use statistics to model risks for potential clients.
-- Google uses statistics to serve you targeted ads.
-- Netflix uses statistics to create hit shows.
-- Spotify uses statistics to suggest music to you.
-
-## Supervised learning
-In supervised learning we aim to quantify the relation between $Y$ and $X$.
-
-$Y$:
-
-- target
-- outcome
-- dependent
-- response
-
-$X$:
-
-- features
-- predictors
-- independent
-- input
 
 ## Supervised learning
 We want to find the predictive function:
@@ -101,7 +62,7 @@ Examples:
 
 - linear regression
 - logistic regression
-- k-nearest neighbours classifying
+- k-nearest neighbours 
 
 ## Unsupervised learning
 With *unsupervised learning* we have a vector of measurement $\bf x_i$ for every unit $i=1, \dots, n$, but we miss the associated response $y_i$. 
@@ -224,7 +185,8 @@ sim.data %>%
 ```{r, fig.height=4}
 sim.data %>%
   ggplot(aes(x1, x2)) +
-  geom_point()
+  geom_point() + 
+  helpIAmColourblind
 ```
 
 # K-Nearest Neighbors
@@ -471,12 +433,4 @@ sim.data %>% ggplot +
   geom_point(aes(x = x1, y = x2, colour = clust)) +
   helpIAmColourblind
 ```
-
-## Conclusion
-
-- Supervised learning: outcome / target available
-- Unsupervised learning: no outcome / target
-- prediction & pattern recognition vs. estimation, inference, testing
-- knn: nonparametric classification
-- kmeans: clustering algorithm
 

@@ -1,5 +1,5 @@
 ---
-title: "Exercise C"
+title: "Exercise B"
 author: "Gerko Vink"
 date: "Rijkstrainees - Statistical Programming in R"
 output: 

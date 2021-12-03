@@ -190,3 +190,6 @@ The following book is an absolute must-read if valid inferences is one of your i
 
 - [Computer Age Statistical Inference](https://hastie.su.domains/CASI/)
 
+And this course may be useful
+
+- [Predictive Machine Learning](www.gerkovink.com/erasmus)

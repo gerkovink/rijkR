@@ -1,7 +1,7 @@
 ---
 title: "How wrong may a useful model be?"
 author: "Gerko Vink"
-date: "Statistical Modeling with R"
+date: "Rijkstrainees - Statistical Programming in R"
 output:
   ioslides_presentation:
     logo: logo.png

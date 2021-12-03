@@ -1,7 +1,7 @@
 ---
 title: "Data manipulation, Pipes and Visualization"
 author: "Gerko Vink"
-date: "Fundamental Techniques with R"
+date: "Rijkstrainees - Statistical Programming in R"
 output:
   ioslides_presentation:
     logo: logo.png

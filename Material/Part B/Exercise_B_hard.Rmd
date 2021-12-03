@@ -1,0 +1,177 @@
+---
+title: "Exercise C"
+author: "Gerko Vink"
+date: "Rijkstrainees - Statistical Programming in R"
+output: 
+   html_document:
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    number_sections: false
+---
+  
+<style type="text/css">
+  
+body{ /* Normal  */
+  font-size: 12px;
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 18px;
+  color: DarkBlue;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+}
+h2 { /* Header 2 */
+  font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+}
+code.r{ /* Code block */
+  font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+  font-size: 14px;
+}
+</style>
+  
+---
+
+In this practical I detail multiple skills and show you a workflow for (predictive) analytics. 
+
+All the best, 
+
+Gerko
+
+---
+
+# Exercises
+
+---
+
+The following packages are required for this practical:
+```{r, message=FALSE}
+library(dplyr)
+library(magrittr)
+library(mice)
+library(ggplot2)
+library(DAAG)
+library(MASS)
+```
+
+---
+
+## Exercise 1
+
+---
+
+The data sets `elastic1` and `elastic2` from the package `DAAG` were obtained
+using the same apparatus, including the same rubber band, as the data frame
+`elasticband`. 
+
+1. **Using a different symbol and/or a different color, plot the data
+from the two data frames `elastic1` and `elastic2` on the same graph. Do the two
+sets of results appear consistent?**
+
+---
+
+## Exercise 2
+
+---
+
+2. **For each of the data sets `elastic1` and `elastic2`, determine the regression of
+distance on stretch. In each case determine:**
+
+- fitted values and standard errors of fitted values and
+- the $R^2$ statistic.
+
+Compare the two sets of results. What is the key difference between the two sets
+of data?
+
+---
+
+## Exercise 3
+
+---
+
+3. **Study the *residual vs leverage* plots for both models. Hint use `plot()` on the fitted object**
+
+---
+
+Because there is a single value that influences the estimation and is somewhat different than the other values, a robust form of regression may be advisable to obtain more stable estimates. When robust methods are used, we refrain from omitting a suspected outlier from our analysis. In general, with robust analysis, influential cases that are not conform the other cases receive less weight in the estimation procedure then under non-robust analysis.
+
+---
+
+## Exercise 4
+
+---
+
+4. **Use the robust regression function `rlm()` from the `MASS` package to fit lines to the data in `elastic1` and `elastic2`. Compare the results with those from use of `lm()`:**
+
+- residuals
+- regression coefficients, 
+- standard errors of coefficients, 
+- plots of residuals against fitted values.
+
+---
+
+## Exercise 5
+
+---
+
+5. **Use the `elastic2` variable `stretch` to obtain predictions on the model fitted on `elastic1`.**
+
+---
+
+## Exercise 6
+
+---
+
+6. **Now make a scatterplot to investigate similarity between plot the predicted values against the observed values for `elastic2`**
+
+---
+
+The mammalsleep dataset is part of `mice`. It contains the Allison and Cicchetti (1976) data for mammalian species. To learn more about this data, type
+```{r}
+?mammalsleep
+```
+
+--- 
+
+## Exercise 7
+
+---
+
+7. **Fit and inspect a model where `brw` is modeled from `bw`**
+
+---
+
+## Exercise 8
+
+---
+
+8. **Now fit and inspect a model where `brw` is predicted from both `bw` and `species`**
+
+---
+
+## Exercise 9
+
+---
+
+9. **Can you find a model that improves the $R^2$ in modeling `brw`?**
+
+---
+
+## Exercise 10
+
+---
+
+10. **Inspect the diagnostic plots for the model obtained in `exercise 16`. What issues can you detect?**
+
+---
+
+End of `Practical`. 

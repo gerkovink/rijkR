@@ -27,6 +27,8 @@ Everything for today (and more) can be found at
 
 - Data visualization with `ggplot2`
 
+**Two learning curves**: Practicals with and without answers
+
 ## Packages we use in these slides
 ```{r warning=FALSE, message=FALSE}
 library(dplyr)      # data manipulation
@@ -37,6 +39,10 @@ library(DT)         # fancy JS/html tables
 library(reshape2)   # melt stuff
 ```
 
+## Opinion
+<center>
+![](scope.png){width=60%}
+</center>
 
 ## The data
 ```{r}
@@ -95,12 +101,12 @@ boys %>% select(is.numeric) %>% na.omit() %>% colMeans
 
 ## The standard `%>%` pipe
 <center>
-<img src="flow_pipe.png" alt="HTML5 Icon" width = 75%>
+![](flow_pipe.png){width=60%}
 </center>
 
 ## The `%$%` pipe
 <center>
-<img src="flow_$_pipe.png" alt="HTML5 Icon" width = 75%>
+![](flow_$_pipe.png){width=60%}
 </center>
 
 ## The role of `.` in a pipe
@@ -189,16 +195,6 @@ boys %>%
   table(reg)
 ```
 
-## rowwise
-```{r}
-boys %>% 
-  na.omit %>% 
-  rowwise() %>% 
-  mutate(tanner = mean(c(gen, phb))) %>% 
-  select(gen, phb, tanner) %>% 
-  head()
-```
-
 
 # Data visualization with `ggplot2`
 
@@ -237,13 +233,13 @@ anscombe %>%
 
 ## Why visualise?
 
-<img src="anscombe.svg" style="display:block;width:90%;margin:0 auto;"></img>
+<img src="anscombe.svg" style="display:block;width:70%;margin:0 auto;"></img>
 <p style="text-align:center;font-style:italic;font-size:0.5em;">Source: Anscombe, F. J. (1973). "Graphs in Statistical Analysis". American Statistician. 27 (1): 17–21.</p>
 
 
 ## Why visualise?
 
-<img src="datasaurus.gif" style="display:block;width:90%;margin:0 auto;"></img>
+<img src="datasaurus.gif" style="display:block;width:100%;margin:0 auto;"></img>
 
 ## What is `ggplot2`?
 Layered plotting based on the book **The Grammer of Graphics** by Leland Wilkinsons.
@@ -314,7 +310,7 @@ plot(gg)
 ```
 
 ## Why this syntax?
-<img src="ggani.gif" style="display:block;width:90%;margin:0 auto;"></img>
+<img src="ggani.gif" style="display:block;width:70%;margin:0 auto;"></img>
 
 ## Revisit the start
 ```{r eval = FALSE}
@@ -325,11 +321,11 @@ ggplot(mutate(na.omit(select(boys, age, hgt, reg)), height_meters = hgt/100),
 Is the same as
 ```{r eval = FALSE}
 boys %>% 
-  select(age, hgt, reg) %>% 
-  na.omit() %>% 
-  mutate(height_meters = hgt/100) %>% 
-  ggplot(aes(x = height_meters, y = age)) + 
-  geom_point(aes(group = reg))
+  select(age, hgt, reg) %>% # select features
+  na.omit() %>% # remove missings. NAUGHTY!
+  mutate(height_meters = hgt/100) %>% # transform height
+  ggplot(aes(x = height_meters, y = age)) + # define plot aes
+  geom_point(aes(group = reg)) # add geom
 ```
 
 

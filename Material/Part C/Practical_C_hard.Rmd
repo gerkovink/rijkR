@@ -1,0 +1,182 @@
+---
+title: "Exercises C"
+params:
+  answers: true
+author: "Gerko Vink, Thom Volker and Erik-Jan van Kesteren"
+date: "Rijkstrainees - Statistical Programming in R"
+output: 
+   html_document:
+    toc: false
+    toc_depth: 5
+    toc_float: true
+    number_sections: false
+---
+  
+<style type="text/css">
+  
+body{ /* Normal  */
+  font-size: 12px;
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 18px;
+  color: DarkBlue;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+}
+h2 { /* Header 2 */
+  font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+}
+code.r{ /* Code block */
+  font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+  font-size: 14px;
+}
+</style>
+
+---
+
+# Introduction
+
+---
+
+In this practical, we will focus on two different classification methods: K-nearest neighbours and logistic regression.
+
+One of the packages we are going to use is `class`. For this, you will probably need to `install.packages("class")` before running the `library()` functions. `ISLR` is also a new package, that needs to be installed to access the `Default` data.
+
+```{r packages, warning = FALSE, message = FALSE}
+library(MASS)
+library(magrittr)
+library(class)
+library(ISLR)
+library(tidyverse)
+library(caret)
+```
+
+Before starting with the exercises, it is a good idea to set your seed, so that (1) your answers are reproducible and (2) you can compare your answers with the answers provided. 
+
+```{r seed}
+set.seed(45)
+```
+
+---
+
+# Default dataset from package `ISLR`
+
+---
+
+The default dataset contains credit card loan data for 10 000 people. The goal is to classify credit card cases as `yes` or `no` based on whether they will default on their loan.
+
+---
+
+1. __Create a scatterplot of the `Default` dataset, where `balance` is mapped to the x position, `income` is mapped to the y position, and `default` is mapped to the colour. Can you see any interesting patterns already?__ 
+
+---
+
+2. __Add the line `+ facet_grid(cols = vars(student))` to the plot. What do you see?__
+
+---
+
+3. __Transform "student" into a dummy variable using `ifelse()` (0 = not a student, 1 = student). Then, randomly split the Default dataset into a training set `train` (80%) and a test set `test` (20%).__
+
+---
+
+# K-Nearest Neighbours
+
+---
+
+Now that we have explored the dataset, we can start on the task of classification. We can imagine a credit card company wanting to predict whether a customer will default on the loan so they can take steps to prevent this from happening.
+
+The first method we will be using is k-nearest neighbours (KNN). It classifies datapoints based on a majority vote of the k points closest to it. In `R`, the `class` package contains a `knn()` function to perform knn.
+
+---
+
+4. __Create class predictions for the test set using the `knn()` function. Use `student`, `balance`, and `income` (but no basis functions of those variables) in the `train` dataset. Set `k` to 5. Store the predictions in a variable called `knn_5_pred`.__
+
+---
+
+5. __Create two scatter plots with income and balance as in the first plot you made. One with the true class (`default`) mapped to the colour aesthetic, and one with the predicted class (`knn_5_pred`) mapped to the colour aesthetic.__
+
+_Hint: Add the predicted class `knn_5_pred` to the `test` dataset before starting your `ggplot()` call of the second plot. What do you see?_
+
+---
+
+6. __Repeat the same steps, but now with a `knn_2_pred` vector generated from a 2-nearest neighbours algorithm. Are there any differences?__
+
+---
+
+# Confusion matrix
+
+---
+
+The confusion matrix is an insightful summary of the plots we have made and the correct and incorrect classifications therein. A confusion matrix can be made in `R` with the `confusionMatrix()` function from the `caret` package. 
+
+```{r confmat1, eval = FALSE}
+confusionMatrix(knn_2_pred, test$default)
+```
+
+---
+
+7. __What would this confusion matrix look like if the classification were perfect?__
+
+---
+
+8. __Make a confusion matrix for the 5-nn model and compare it to that of the 2-nn model. What do you conclude?__
+
+---
+
+# Logistic regression
+
+---
+
+KNN directly predicts the class of a new observation using a majority vote of the existing observations closest to it. In contrast to this, logistic regression predicts the `log-odds` of belonging to category 1. These log-odds can then be transformed to probabilities by performing an inverse logit transform:
+
+$$ p = \frac{1}{1+e^{-\alpha}},$$ 
+where $\alpha$ indicates log-odds for being in class 1 and $p$ is the probability.
+
+Therefore, logistic regression is a `probabilistic` classifier as opposed to a `direct` classifier such as KNN: indirectly, it outputs a probability which can then be used in conjunction with a cutoff (usually 0.5) to classify new observations.
+
+Logistic regression in `R` happens with the `glm()` function, which stands for generalized linear model. Here we have to indicate that the residuals are modeled not as a gaussian (normal distribution), but as a `binomial` distribution.
+
+--- 
+
+9. __Use `glm()` with argument `family = binomial` to fit a logistic regression model `fit` to the `train` data.__
+
+---
+
+10. __Visualise the predicted probabilities versus observed class for the training dataset in `fit`. You can choose for yourself which type of visualisation you would like to make. Write down your interpretations along with your plot.__
+
+---
+
+11. __Look at the coefficients of the `fit` model and interpret the coefficient for `balance`. What would the probability of default be for a person who is not a student, has an income of 40000, and a balance of 3000 dollars at the end of each month? Is this what you expect based on the plots we've made before?__
+
+---
+
+## Visualising the effect of the balance variable
+
+In two steps, we will visualise the effect `balance` has on the predicted default probability.
+
+---
+
+12. __Create a data frame called `balance_df` with 3 columns and 500 rows: `student` always 0, `balance` ranging from 0 to 3000, and `income` always the mean income in the `train` dataset.__
+
+---
+
+13. __Use this dataset as the `newdata` in a `predict()` call using `fit` to output the predicted probabilities for different values of `balance`. Then create a plot with the `balance_df$balance` variable mapped to x and the predicted probabilities mapped to y. Is this in line with what you expect?__
+
+---
+
+14. __Create a confusion matrix just as the one for the KNN models by using a cutoff predicted probability of 0.5. Does logistic regression perform better?__
+
+---
+
+End of Practical
+
+

@@ -145,13 +145,13 @@ I usually adapt the course as we go. To ensure that you work with the latest ite
 
 - Part B: Linear modeling, Prediction and Crossvalidation
     - [Lecture B](Material/Part B/Lecture_B.html)
-    - [Practical B](Material/Part B/Practical_B_walkthrough.html)
-    - [Impractical B](Material/Part B/Practical_B.html)
+    - [Practical B](Material/Part B/Exercise_B.html)
+    - [Impractical B](Material/Part B/Exercise_B_hard.html)
 
 - Part C: Supervised and unsupervised clustering
     - [Lecture C](Material/Part C/Lecture_C.html)
-    - [Practical C](Material/Part C/Practical_C_walkthrough.html)
-    - [Impractical C](Material/Part C/Practical_C.html)
+    - [Practical C](Material/Part C/Practical_C.html)
+    - [Impractical C](Material/Part C/Practical_C_hard.html)
 
 All lectures are in `html` format. Practicals are walkthrough files that guide you through the exercises. `Impractical` files contain the exercises without walkthrough, explanations and solutions. 
 

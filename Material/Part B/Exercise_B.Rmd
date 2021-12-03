@@ -97,8 +97,7 @@ The results seem very consistent: Data set `elastic2` has more observations over
 
 ---
 
-2. **For each of the data sets `elastic1` and `elastic2`, determine the regression of
-distance on stretch. In each case determine:**
+2. **For each of the data sets `elastic1` and `elastic2`, determine the regression of distance on stretch (i.e. model the outcome `distance` on the predictor `stretch`). In each case determine:**
 
 - fitted values and standard errors of fitted values and
 - the $R^2$ statistic.

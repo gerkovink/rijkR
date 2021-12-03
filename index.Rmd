@@ -167,14 +167,6 @@ All lectures are in `html` format. Practicals are walkthrough files that guide y
 
 The above links are useful references that connect to today's materials. The above `ggplot2` link details pretty much all you can do with package `ggplot2`.
 
-
-# Course archive
-
-## Column 1
-
-### Download a course archive 
-I usually adapt the course as we go. To ensure that you work with the latest iteration of the course materials, I advice all course participants to access the materials online. At the end of the course, you can download all course materials [here](Material/Archive/Archive.html). 
-
 # To continue
 
 ## Column 1

@@ -120,6 +120,13 @@ help(boys)
 
 10. **Now recreate the plot with the following specifications:**
 
+- If `bmi < 18.5` use `color = "light blue"`
+- If `bmi > 18.5 & bmi < 25` use `color = "light green"`
+- If `bmi > 25 & bmi < 30` use `color = "orange"`
+- If `bmi > 30` use `color = "red"`
+
+Hint: it may help to expand the data set with a new variable. 
+
 ---
 
 11. **Create a histogram for `age` in the `boys` data set**

@@ -1,0 +1,466 @@
+---
+title: "Statistics, Pipes and Visualization"
+author: 
+  - name: Gerko Vink
+    orcid: 0000-0001-9767-1924
+    email: g.vink@uu.nl
+    affiliations:
+      - name: Utrecht University
+institute: Methodology & Statistics @ Utrecht University
+date: December 9, 2022
+execute: 
+  echo: true
+format: 
+  revealjs:
+    theme: [solarized, gerko.scss]
+    progress: true
+    margin: 0.075
+    logo: logo.png 
+    toc: true
+    toc-depth: 1
+    toc-title: Outline
+    slide-number: true
+    scrollable: false
+    width: 1200
+    reference-location: margin
+    footer: Gerko Vink
+---
+
+## Materials
+
+All materials can be found at <br><br>
+[www.gerkovink.com/rijkR](https://www.gerkovink.com/syn)
+
+## Disclaimer
+
+I owe a debt of gratitude to many people as the thoughts and teachings in my slides are the process of years-long development cycles and discussions with my team, friends, colleagues and peers. When someone has contributed to the content of the slides, I have credited their authorship.
+
+When external figures and other sources are shown:
+
+1)  the references are included when the origin is known, or
+2)  the objects are directly linked from within the public domain and the source can be obtained by right-clicking the objects.
+
+Scientific references are in the footer. 
+
+Opinions are my own.
+<br><br><br><br>
+Packages used:
+```{r echo=FALSE}
+library(mice)
+library(dplyr)
+library(magrittr)
+library(purrr)
+set.seed(123)
+```
+
+# Vocabulary
+
+## Terms I may use
+
+-   TDGM: True data generating model
+-   DGP: Data generating process, closely related to the TDGM, but with all the wacky additional uncertainty
+-   Truth: The comparative truth that we are interested in
+-   Bias: The distance to the comparative truth
+-   Variance: When not everything is the same
+-   Estimate: Something that we calculate or guess
+-   Estimand: The thing we aim to estimate and guess
+-   Population: That larger entity without sampling variance
+-   Sample: The smaller thing with sampling variance
+-   Incomplete: There exists a more complete version, but we don't have it
+-   Observed: What we have
+-   Unobserved: What we would also like to have
+
+# Statistical inference
+
+## At the start
+
+We begin today with an exploration into statistical inference.
+
+<center>
+**Statistical inference is the process of drawing conclusions from truths **
+</center>
+
+Truths are boring, but they are convenient.
+
+-   however, for most problems truths require a lot of calculations, tallying or a complete census.
+-   therefore, a proxy of the truth is in most cases sufficient
+-   An example for such a proxy is a **sample**
+-   Samples are widely used and have been for a long time[^1]
+
+[^1]: See [Jelke Bethlehem's CBS discussion paper](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjkyPTCs4L3AhUCuKQKHUpmBvIQFnoECAMQAw&url=https%3A%2F%2Fwww.cbs.nl%2F-%2Fmedia%2Fimported%2Fdocuments%2F2009%2F07%2F2009-15-x10-pub.pdf&usg=AOvVaw3BpUW2s_k0MB5yH1o-QGf2) for an overview of the history of sampling within survey
+
+## Being wrong about the truth
+
+::: columns
+::: {.column width="40%"}
+![](img/2.%20missingness_problem.png){width="90%"}
+:::
+
+::: {.column width="60%"}
+-   The population is the truth
+-   The sample comes from the population, but is generally smaller in size
+-   This means that not all cases from the population can be in our sample
+-   If not all information from the population is in the sample, then our sample may be *wrong* <br><br><br> Q1: Why is it important that our sample is not wrong?<br> Q2: How do we know that our sample is not wrong?
+:::
+:::
+
+## Solving the missingness problem
+
+::: columns
+::: {.column width="40%"}
+![](img/3.%20random_sampling.png){width="90%"}
+:::
+
+::: {.column width="60%"}
+-   There are many flavours of sampling
+-   If we give every unit in the population the same probability to be sampled, we do **random sampling**
+-   The convenience with random sampling is that the missingness problem can be ignored
+-   The missingness problem would in this case be: **not every unit in the population has been observed in the sample**
+
+<br> Q3: Would that mean that if we simply observe every potential unit, we would be unbiased about the truth?
+:::
+:::
+
+## Sidestep
+
+::: columns
+::: {.column width="50%"}
+![](img/4.%20sidestep1.png){width="90%"}
+:::
+
+::: {.column width="50%"}
+-   The problem is a bit larger
+
+-   We have three entities at play, here:
+
+    1.  The truth we're interested in
+    2.  The proxy that we have (e.g. sample)
+    3.  The model that we're running
+
+-   The more features we use, the more we capture about the outcome for the cases in the data
+:::
+:::
+
+## Sidestep
+
+::: columns
+::: {.column width="50%"}
+![](img/4.%20sidestep1.png){width="90%"}
+:::
+
+::: {.column width="50%"}
+-   The more cases we have, the more we approach the true information
+
+All these things are related to uncertainty. Our model can still yield biased results when fitted to $\infty$ features. Our inference can still be wrong when obtained on $\infty$ cases.
+:::
+:::
+
+## Sidestep
+
+![](img/5.%20sidestep2.png){width="90%"}
+
+**Core assumption: all observations are bonafide**
+
+# Let's start with R
+
+## Packages we use in these slides
+```{r warning=FALSE, message=FALSE, echo=TRUE}
+library(dplyr)      # data manipulation
+library(magrittr)   # pipes
+library(mice)       # for the boys data
+library(ggplot2)    # visualization
+library(DT)         # fancy JS/html tables
+library(reshape2)   # melt stuff
+set.seed(123)       # you can have the same
+```
+
+
+## The data
+```{r}
+head(boys)
+```
+
+## Goal
+
+At the end of this lecture we aim to understand what happens in 
+
+```{r eval = FALSE}
+ggplot(mutate(na.omit(select(boys, age, hgt, reg)), height_meters = hgt/100), 
+       aes(height_meters, age)) + geom_point(aes(group = reg))
+```
+
+# Pipes
+
+## This is a pipe:
+
+```{r message=FALSE, eval = FALSE}
+boys %>% 
+  select(is.numeric) %>% 
+  cor(use = "pairwise.complete.obs") %>% 
+  round(3)
+```
+
+It effectively replaces `round(cor(select(boys, is.numeric), use = "pairwise.complete.obs"), digits = 3)`.
+
+<img src="pipe.jpg" style="display:block;width:400px;margin-left:auto;margin-right:auto"></img>
+
+## Why are pipes useful?
+Benefit: a single object in memory that is easy to interpret
+Your code becomes more readable:
+
+- data operations are structured from left-to-right and not from in-to-out
+- nested function calls are avoided
+- local variables and copied objects are avoided
+- easy to add steps in the sequence
+
+## What do pipes do:
+
+- `f(x)` becomes `x %>% f()`
+```{r}
+boys$age %>% mean()
+```
+- `f(x, y)` becomes `x %>% f(y)` 
+```{r}
+boys %>% head(n = 1)
+```
+- `h(g(f(x)))` becomes `x %>% f %>% g %>% h` 
+```{r warning=FALSE}
+boys %>% select(is.numeric) %>% na.omit() %>% colMeans
+```
+
+# More pipe stuff
+
+## The standard `%>%` pipe
+<center>
+![](flow_pipe.png){width=60%}
+</center>
+
+## The `%$%` pipe
+<center>
+![](flow_$_pipe.png){width=60%}
+</center>
+
+## The role of `.` in a pipe
+In `a %>% b(arg1, arg2, arg3)`, `a` will become `arg1`. With `.` we can change this.
+```{r eval = FALSE}
+boys %>%
+  plot(bmi ~ age, data = .)
+```
+VS
+```{r eval = FALSE}
+boys %$%
+  plot(bmi ~ age)
+```
+The `.` can be used as a placeholder in the pipe. 
+
+# Data manipulation
+
+## Performing a t-test in a pipe
+```{r message=FALSE}
+boys %>%
+  mutate(ovwgt = bmi > 25) %$% 
+  t.test(age ~ ovwgt)
+```
+is the same as 
+```{r eval=FALSE}
+t.test(age ~ (bmi > 25), data = boys)
+```
+
+## Melting
+```{r}
+boys %>% 
+  select(reg, age) %>% 
+  melt(id.vars = "reg", variable.name = "variable", value.name = "value") %>%
+  datatable(options = list(pageLength = 25, scrollY = "300px"))
+```
+
+## Calculate statistics
+```{r}
+boys %>% 
+  select(reg, age) %>% 
+  melt(id.vars = "reg", variable.name = "variable", value.name = "value") %>%
+  group_by(variable, reg) %>% 
+  summarise_all(list(mean = mean, sd = sd), na.rm = TRUE) %>% 
+  datatable(options = list(pageLength = 25, scrollY = "200px"))
+```
+
+## Multiple columns
+```{r}
+boys %>% 
+  select(reg, where(is.numeric)) %>% 
+  melt(id.vars = "reg", variable.name = "variable", value.name = "value") %>%
+  group_by(variable, reg) %>% 
+  summarise_all(list(mean = mean, sd = sd), na.rm = TRUE) %>% 
+  datatable(options = list(pageLength = 25, scrollY = "200px"))
+```
+
+## Mutate: add
+```{r}
+boys %>% 
+  mutate(bmi_calc = wgt / (hgt/100)^2) %>% 
+  select(bmi, bmi_calc) %>% 
+  head()
+```
+
+## Mutate: remove
+```{r}
+boys %>% 
+  mutate(reg = NULL,
+         gen = NULL, 
+         phb = NULL) %>% 
+  head()
+```
+## Mutate: change
+```{r}
+boys %>% 
+  mutate(hgt = hgt/100) %>% 
+  tail()
+```
+## Mutate: transform column
+```{r}
+boys %$% table(reg)
+
+boys %>% 
+  select(hgt, reg) %>%
+  mutate(across(!hgt, as.numeric)) %$% 
+  table(reg)
+```
+
+
+# Data visualization with `ggplot2`
+
+## The `anscombe` data
+```{r}
+anscombe
+```
+
+## The same statistical properties
+```{r}
+anscombe %>% colMeans()
+anscombe %>% cor() %>% round(digits = 3) %>% .[1:4, 5:8]
+anscombe %>% var() %>% round(digits = 3) %>% .[1:4, 5:8]
+```
+
+##  Fitting a line
+```{r message = FALSE, fig.height=3.5}
+anscombe %>%
+  ggplot(aes(y1, x1)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+## Why visualise?
+
+- We can process a lot of information quickly with our eyes
+- Plots give us information about
+    - Distribution / shape
+    - Irregularities
+    - Assumptions
+    - Intuitions
+- Summary statistics, correlations, parameters, model tests, *p*-values do not tell the whole story
+
+### ALWAYS plot your data!
+
+
+## Why visualise?
+
+<img src="anscombe.svg" style="display:block;width:70%;margin:0 auto;"></img>
+<p style="text-align:center;font-style:italic;font-size:0.5em;">Source: Anscombe, F. J. (1973). "Graphs in Statistical Analysis". American Statistician. 27 (1): 17–21.</p>
+
+
+## Why visualise?
+
+<img src="datasaurus.gif" style="display:block;width:100%;margin:0 auto;"></img>
+
+## What is `ggplot2`?
+Layered plotting based on the book **The Grammer of Graphics** by Leland Wilkinson.
+
+::: footer
+Wilkinson, L. (2006). The Grammar of Graphics. Springer Science & Business Media.
+:::
+
+With `ggplot2` you
+
+1. provide the _data_
+2. define how to map variables to _aesthetics_
+3. state which _geometric object_ to display
+4. (optional) edit the overall _theme_ of the plot
+
+`ggplot2` then takes care of the details
+
+## An example: scatterplot
+
+1: Provide the data
+```{r, eval=FALSE}
+mice::boys %>%
+  ggplot()
+```
+
+2: map variable to aesthetics
+```{r, eval=FALSE}
+mice::boys %>%
+  ggplot(aes(x = age, y = bmi))
+```
+
+3: state which geometric object to display
+```{r, eval=FALSE}
+mice::boys %>%
+  ggplot(aes(x = age, y = bmi)) +
+  geom_point()
+```
+
+## An example: scatterplot
+```{r, echo=FALSE, fig.align='center'}
+mice::boys %>%
+  ggplot(aes(x = age, y = bmi)) +
+  geom_point(na.rm = TRUE)
+```
+
+## Why this syntax?
+
+Create the plot
+```{r, fig.align='center', dev.args=list(bg="transparent"), warning=FALSE, message=FALSE}
+gg <- 
+  mice::boys %>%
+  ggplot(aes(x = age, y = bmi)) +
+  geom_point(col = "dark green")
+```
+
+Add another layer (smooth fit line)
+```{r, warning=FALSE, message=FALSE, fig.align='center', dev.args=list(bg="transparent")}
+gg <- gg + 
+  geom_smooth(col = "dark blue")
+```
+
+Give it some labels and a nice look
+```{r, fig.align='center', dev.args=list(bg="transparent")}
+gg <- gg + 
+  labs(x = "Age", y = "BMI", title = "BMI trend for boys") +
+  theme_minimal()
+```
+
+## Why this syntax?
+```{r, warning=FALSE, message=FALSE, fig.align='center', dev.args=list(bg="transparent")}
+plot(gg)
+```
+
+## Why this syntax?
+<img src="ggani.gif" style="display:block;width:70%;margin:0 auto;"></img>
+
+## Revisit the start
+```{r eval = FALSE}
+ggplot(mutate(na.omit(select(boys, age, hgt, reg)), height_meters = hgt/100), 
+       aes(height_meters, age)) + geom_point(aes(group = reg))
+```
+
+Is the same as
+```{r eval = FALSE}
+boys %>% 
+  select(age, hgt, reg) %>% # select features
+  na.omit() %>% # remove missings. NAUGHTY!
+  mutate(height_meters = hgt/100) %>% # transform height
+  ggplot(aes(x = height_meters, y = age)) + # define plot aes
+  geom_point(aes(group = reg)) # add geom
+```
+
+

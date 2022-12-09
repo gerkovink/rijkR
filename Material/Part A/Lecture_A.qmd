@@ -363,9 +363,13 @@ anscombe %>%
 
 
 ## Why visualise?
+<center>
+![](Anscombe.svg){width=70%}
+</center>
 
-<img src="anscombe.svg" style="display:block;width:70%;margin:0 auto;"></img>
-<p style="text-align:center;font-style:italic;font-size:0.5em;">Source: Anscombe, F. J. (1973). "Graphs in Statistical Analysis". American Statistician. 27 (1): 17–21.</p>
+::: footer
+Anscombe, F. J. (1973). "Graphs in Statistical Analysis". American Statistician. 27 (1): 17–21.
+:::
 
 
 ## Why visualise?

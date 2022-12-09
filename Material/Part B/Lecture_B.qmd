@@ -26,19 +26,6 @@ format:
     footer: Gerko Vink
 ---
 
-## This lecture
-
-- the linear model
-
-- assumptions
-
-- model fit
-
-- model complexity
-
-- cross validation
-
-
 ##  We use the following packages
 ```{r message=FALSE}
 library(MASS)
@@ -374,8 +361,8 @@ DAAG::CVlm(anscombe, fit, plotit="Residual", printit=F)
 
 ## K-fold cross-validation `boys` data 
 
-  -  residual variance sample is 1
-  -  residual variance cross-validation is 1.46
+  -  residual variance sample is $1.496^2 \approx 2.24$
+  -  residual variance cross-validation is 2.28
   -  regression lines in the 3 folds almost identical
 
 ```{r echo=F, fig.height=4, dev.args = list(bg = 'transparent')}

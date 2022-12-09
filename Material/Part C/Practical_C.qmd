@@ -330,7 +330,7 @@ balance_df$predprob <- predict(fit,
 
 balance_df %>% 
   ggplot(aes(x = balance, y = predprob)) +
-  geom_line(col = "dark blue", size = 1) +
+  geom_line(col = "dark blue", linewidth = 1) +
   theme_minimal()
 ```
 
